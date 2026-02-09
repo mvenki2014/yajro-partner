@@ -1,12 +1,12 @@
 import * as React from "react";
 import { MobileShell } from "@/components/layout/MobileShell";
-import { Badge } from "@/components/ui/Badge";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { Button } from "@/components/ui/Button";
 import { setLocation } from "@/store/slices/locationSlice";
 import { LocationPicker } from "@/components/ui/LocationPicker";
 import { shubhDaysISO } from "@/data/mock";
+import { cn } from "@/lib/utils";
 
 function toISO(d: Date) {
   const yyyy = d.getFullYear();
@@ -86,9 +86,8 @@ export function Booking({
           </button>
           <div className="min-w-0 flex-1">
             <div className="truncate font-semibold">Booking & scheduling</div>
-            <div className="text-xs text-slate-500 truncate">Pick shubh date, time & location</div>
+            <div className="text-xs text-slate-500 truncate">Pick auspicious date, time & location</div>
           </div>
-          <Badge variant="success">Shubh din</Badge>
         </>
       }
       footer={
@@ -110,7 +109,7 @@ export function Booking({
       <div className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold">Choose date</h2>
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {next7.map(({iso, d, shubh}) => {
               const active = iso === selectedDate;
               const day = d.toLocaleDateString(undefined, {weekday: "short"});
@@ -121,24 +120,34 @@ export function Booking({
                   type="button"
                   onClick={() => setSelectedDate(iso)}
                   className={
-                    "min-w-[84px] mt-1 rounded-2xl p-3 text-left ring-1 transition " +
+                    "mt-1 min-w-[58px] flex flex-col items-center justify-between rounded-2xl py-2 px-1 transition " +
                     (active
-                      ? "bg-[#FF9933]/12 ring-[#FF9933]/35"
-                      : "bg-white ring-slate-200 hover:bg-slate-50")
+                      ? "bg-[#FF9933]/12 ring-[#FF9933]/35 ring-1"
+                      : "bg-white ring-1 ring-slate-100 text-slate-400 hover:bg-slate-50")
                   }
                 >
-                  <div className="text-xs font-semibold text-slate-600">{day}</div>
-                  <div className="mt-1 text-lg font-bold">{date}</div>
-                  <div className="mt-1">
-                    {shubh ? <Badge variant="success">Shubh</Badge> : <Badge variant="neutral">Ok</Badge>}
+                  <div className={cn("text-[11px] font-semibold", active ? "font-medium text-[#B35300]" : "text-slate-500")}>
+                    {day}
+                  </div>
+                  <div className={cn("text-xl font-bold my-1", active ? "text-xl font-bold text-[#B35300]" : "text-slate-800")}>
+                    {date}
+                  </div>
+                  <div className="h-1.5 w-1.5 flex items-center justify-center">
+                    {(shubh) && (
+                      <div className={"h-1.5 w-1.5 rounded-full transition-colors bg-emerald-500"} />
+                    )}
                   </div>
                 </button>
               );
             })}
           </div>
-          <div className="mt-2 text-xs text-slate-500">
-            * Green dates are marked as auspicious (mock data).
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-2 w-2 rounded-full bg-emerald-500" />
+            <div className="text-xs text-slate-500 font-medium">
+              Green dots indicate highly auspicious days (Shubh Din).
+            </div>
           </div>
+
         </div>
 
         <div>
