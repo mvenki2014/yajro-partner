@@ -27,7 +27,6 @@ export function LocationPicker({
   position,
   onLocationChange,
   locationType = "Home",
-  onLocationTypeChange,
   isExpanded: isExpandedProp,
   onExpandedChange,
   locationData,
@@ -105,13 +104,12 @@ export function LocationPicker({
         <div className="relative z-10 w-3/4">
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1 mb-1">
             {locationType}{" "}
-          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/20">
-            <Check className="h-2.5 w-2.5" strokeWidth={3} />
-          </div>
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/20">
+              <Check className="h-2.5 w-2.5" strokeWidth={3} />
+            </div>
           </h3>
 
-          <p className="text-xs text-slate-500 leading-relaxed">
-            {address}
+          <p className="text-xs text-slate-500 leading-relaxed"> {address}
           </p>
         </div>
       </div>
@@ -143,29 +141,6 @@ export function LocationPicker({
       </div>
 
       <div className="p-4 pt-2 bg-orange-50/30">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex flex-wrap gap-2">
-            {["Home", "Temple", "Others"].map((l) => {
-              const active = l === locationType;
-              return (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => onLocationTypeChange?.(l)}
-                  className={
-                    "rounded-full px-3 py-2 text-xs font-semibold ring-1 transition " +
-                    (active
-                      ? "bg-[#FF9933]/15 ring-[#FF9933]/35 text-[#B35300]"
-                      : "bg-white ring-slate-200 text-slate-700 hover:bg-slate-50")
-                  }
-                >
-                  {l}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        
         <div className="relative h-64 rounded-2xl overflow-hidden ring-1 ring-slate-200 shadow-sm bg-white">
           <Map
             center={[tempPosition[1], tempPosition[0]]}

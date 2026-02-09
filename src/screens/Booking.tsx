@@ -16,15 +16,18 @@ function toISO(d: Date) {
 }
 
 const timeSlots = [
-  { id: "morning", label: "Morning", sub: "6:00 AM – 11:00 AM" },
-  { id: "afternoon", label: "Afternoon", sub: "11:00 AM – 4:00 PM" },
-  { id: "evening", label: "Evening", sub: "4:00 PM – 9:00 PM" },
+  { id: "00-04", label: "00 - 04", sub: "Early Morning" },
+  { id: "04-08", label: "04 - 08", sub: "Dawn" },
+  { id: "08-12", label: "08 - 12", sub: "Morning" },
+  { id: "12-16", label: "12 - 16", sub: "Afternoon" },
+  { id: "16-20", label: "16 - 20", sub: "Evening" },
+  { id: "20-24", label: "20 - 24", sub: "Night" },
 ] as const;
 
 export function Booking({
-                          onBack,
-                          onConfirm,
-                        }: {
+  onBack,
+  onConfirm,
+}: {
   onBack: () => void;
   onConfirm: () => void;
 }) {
@@ -33,7 +36,7 @@ export function Booking({
   const locationData = useSelector((state: RootState) => state.location.data);
   const [selectedDate, setSelectedDate] = React.useState(toISO(today));
   const [slot, setSlot] = React.useState<string>(
-    "morning"
+    "08-12"
   );
   const [address, setAddress] = React.useState(locationData?.address || "Plot 12, Lakshmi Nagar, Hyderabad");
   const [locationType, setLocationType] = React.useState(locationData?.locationType || "Home");
@@ -147,7 +150,6 @@ export function Booking({
               Green dots indicate highly auspicious days (Shubh Din).
             </div>
           </div>
-
         </div>
 
         <div>
@@ -167,8 +169,8 @@ export function Booking({
                       : "bg-white ring-slate-200 hover:bg-slate-50")
                   }
                 >
-                  <div className="text-sm font-semibold">{t.label}</div>
-                  <div className="mt-1 text-xs text-slate-500 leading-snug">{t.sub}</div>
+                  <div className={cn("text-sm font-bold", active ? "text-[#B35300]" : "text-slate-800")}>{t.label}</div>
+                  <div className="mt-1 text-[11px] text-slate-500 font-medium">{t.sub}</div>
                 </button>
               );
             })}
@@ -192,21 +194,6 @@ export function Booking({
               position={position}
               locationData={locationData}
               locationType={locationType}
-              onLocationTypeChange={(type) => {
-                setLocationType(type);
-                // Immediately persist type change to Redux
-                dispatch(
-                  setLocation({
-                    address,
-                    latitude: position[0],
-                    longitude: position[1],
-                    locationType: type,
-                    city: locationData?.city,
-                    neighbourhood: locationData?.neighbourhood,
-                    ip: locationData?.ip,
-                  })
-                );
-              }}
               isExpanded={isLocationExpanded}
               onExpandedChange={setIsLocationExpanded}
               onLocationChange={(newAddress, newPos) => {
@@ -229,6 +216,46 @@ export function Booking({
           </div>
         </div>
 
+        <div>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Destination</h2>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["Home", "Temple", "Others"].map((l) => {
+              const active = l === locationType;
+              return (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => {
+                    setLocationType(l);
+                    // Immediately persist type change to Redux
+                    dispatch(
+                      setLocation({
+                        address,
+                        latitude: position[0],
+                        longitude: position[1],
+                        locationType: l,
+                        city: locationData?.city,
+                        neighbourhood: locationData?.neighbourhood,
+                        ip: locationData?.ip,
+                      })
+                    );
+                  }}
+                  className={
+                    "rounded-full px-4 py-2 text-xs font-semibold ring-1 transition " +
+                    (active
+                      ? "bg-[#FF9933]/15 ring-[#FF9933]/35 text-[#B35300]"
+                      : "bg-white ring-slate-200 text-slate-700 hover:bg-slate-50")
+                  }
+                >
+                  {l}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
       </div>
     </MobileShell>

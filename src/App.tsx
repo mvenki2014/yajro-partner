@@ -42,7 +42,7 @@ export function App() {
           setRoute({ name: "service", serviceId });
         }}
         onOpenBooking={() => {
-          setRoute({ name: "booking", serviceId: selectedServiceId });
+          setRoute({ name: "booking", serviceId: selectedServiceId, tierId: "silver" });
         }}
         onNavigate={handleNavigation}
       />
@@ -67,8 +67,8 @@ export function App() {
       <ServiceDetail
         serviceId={route.serviceId}
         onBack={() => setRoute({ name: "services" })}
-        onContinue={() => {
-          setRoute({ name: "booking", serviceId: route.serviceId });
+        onContinue={(tierId) => {
+          setRoute({ name: "booking", serviceId: route.serviceId, tierId });
         }}
       />
     );
@@ -77,8 +77,10 @@ export function App() {
   if (route.name === "booking") {
     return (
       <Booking
-        onBack={() => setRoute({ name: "service", serviceId: selectedServiceId })}
-        onConfirm={() => setRoute({ name: "checkout" })}
+        serviceId={route.serviceId}
+        tierId={route.tierId}
+        onBack={() => setRoute({ name: "service", serviceId: route.serviceId })}
+        onConfirm={() => setRoute({ name: "checkout", serviceId: route.serviceId, tierId: route.tierId })}
       />
     );
   }
@@ -86,7 +88,9 @@ export function App() {
   if (route.name === "checkout" || route.name === "tracking") {
     return (
       <CheckoutTracking
-        onBack={() => setRoute({ name: "booking", serviceId: selectedServiceId })}
+        serviceId={route.serviceId}
+        tierId={route.tierId}
+        onBack={() => setRoute({ name: "booking", serviceId: route.serviceId, tierId: route.tierId })}
         onReset={() => {
           setRoute({ name: "home" });
         }}
@@ -103,7 +107,7 @@ export function App() {
           setRoute({ name: "service", serviceId });
         }}
         onOpenBooking={() => {
-          setRoute({ name: "booking", serviceId: selectedServiceId });
+          setRoute({ name: "booking", serviceId: selectedServiceId, tierId: "silver" });
         }}
         onNavigate={handleNavigation}
       />
@@ -117,7 +121,7 @@ export function App() {
         setRoute({ name: "service", serviceId });
       }}
       onOpenBooking={() => {
-        setRoute({ name: "booking", serviceId: selectedServiceId });
+        setRoute({ name: "booking", serviceId: selectedServiceId, tierId: "silver" });
       }}
       onNavigate={handleNavigation}
     />

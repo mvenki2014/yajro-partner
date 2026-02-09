@@ -42,8 +42,8 @@ export type Route =
   | { name: "home" }
   | { name: "services"; categoryId?: string }
   | { name: "service"; serviceId: string }
-  | { name: "booking"; serviceId?: string }
-  | { name: "checkout" }
+  | { name: "booking"; serviceId: string; tierId: string }
+  | { name: "checkout"; serviceId: string; tierId: string }
   | { name: "bookings" }
   | { name: "tracking" }
   | { name: "account" };

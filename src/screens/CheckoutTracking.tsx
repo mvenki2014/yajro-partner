@@ -3,6 +3,7 @@ import { MobileShell } from "@/components/layout/MobileShell";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { services } from "@/data/mock";
 
 const steps = [
   { id: "assigned", label: "Poojari assigned" },
@@ -13,19 +14,26 @@ const steps = [
 
 
 export function CheckoutTracking({
+  serviceId,
+  tierId,
   onBack,
   onReset,
 }: {
+  serviceId: string;
+  tierId: string;
   onBack: () => void;
   onReset: () => void;
 }) {
+  const service = services.find((s) => s.id === serviceId) ?? services[0];
+  const tierObj = service.packages.find((p) => p.id === tierId) ?? service.packages[0];
+
   const [active, setActive] = React.useState<string>("assigned");
 
   const activeIndex = steps.findIndex((s) => s.id === active);
 
   const cost = {
-    dakshina: 2299,
-    samagri: 650,
+    dakshina: tierObj.price,
+    samagri: tierObj.includesSamagri ? 650 : 0,
     convenience: 49,
   };
   const total = cost.dakshina + cost.samagri + cost.convenience;
@@ -48,7 +56,7 @@ export function CheckoutTracking({
             <div className="truncate font-semibold">Checkout & tracking</div>
             <div className="text-xs text-slate-500 truncate">Summary + live status mock</div>
           </div>
-          <Badge tone="saffron">₹{total}</Badge>
+          <Badge variant="saffron">₹{total}</Badge>
         </>
       }
       footer={
@@ -75,7 +83,7 @@ export function CheckoutTracking({
               <div className="mt-1 text-2xl font-extrabold">₹{total}</div>
               <div className="mt-1 text-xs text-slate-500">Includes taxes & platform fee</div>
             </div>
-            <Badge tone="success">Secure</Badge>
+            <Badge variant="success">Secure</Badge>
           </div>
           <div className="mt-4 space-y-2 text-sm">
             <Row label="Dakshina (fees)" value={`₹${cost.dakshina}`} />
@@ -99,7 +107,7 @@ export function CheckoutTracking({
                 <div className="text-lg font-semibold">Live tracking</div>
                 <div className="text-xs text-slate-500">Map is a visual mock</div>
               </div>
-              <Badge tone="neutral">ETA 18 min</Badge>
+              <Badge variant="neutral">ETA 18 min</Badge>
             </div>
           </div>
           <div className="h-44 bg-[radial-gradient(circle_at_30%_20%,rgba(255,153,51,.25),transparent_45%),radial-gradient(circle_at_70%_70%,rgba(34,197,94,.18),transparent_45%),linear-gradient(135deg,rgba(15,23,42,.03),rgba(255,255,255,.8))] relative">
@@ -152,7 +160,7 @@ export function CheckoutTracking({
                         {s.label}
                       </div>
                     </div>
-                    {idx === activeIndex ? <Badge tone="saffron">Now</Badge> : null}
+                    {idx === activeIndex ? <Badge variant="saffron">Now</Badge> : null}
                   </div>
                 );
               })}
