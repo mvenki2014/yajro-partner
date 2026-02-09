@@ -1,4 +1,4 @@
-import { Category, PackageTier, Service, Poojari } from "@/types";
+import { Category, Service, Poojari } from "@/types";
 import appData from "./app-data.json";
 import servicesContent from "./services-content.json";
 

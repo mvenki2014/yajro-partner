@@ -1,9 +1,9 @@
 import { Tab } from "@/types";
 
 export function BottomNav({
-  activeTab = "home",
-  onTabChange,
-}: {
+                            activeTab = "home",
+                            onTabChange,
+                          }: {
   activeTab?: Tab;
   onTabChange?: (tab: Tab) => void;
 }) {

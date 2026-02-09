@@ -108,7 +108,6 @@ export function Services({ onSelectService, onNavigate, initialCategory }: Servi
                   >
                     {cat.name}
                   </button>
-
                 ))}
               </div>
             </div>

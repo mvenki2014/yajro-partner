@@ -50,7 +50,7 @@ export function ServiceDetail({
             <div className="truncate font-semibold">{service.title}</div>
             <div className="text-xs text-slate-500 truncate">Service details & customization</div>
           </div>
-          <Badge tone="saffron">{formatDuration(`${Math.floor(service.durationMins / 60)}h ${service.durationMins % 60}m`)}</Badge>
+          <Badge variant="saffron">{formatDuration(`${Math.floor(service.durationMins / 60)}h ${service.durationMins % 60}m`)}</Badge>
         </>
       }
       footer={
@@ -140,14 +140,14 @@ export function ServiceDetail({
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <div className="font-semibold truncate">{p.name}</div>
-                      {p.verified ? <Badge tone="success">Verified</Badge> : null}
+                      {p.verified ? <Badge variant="success">Verified</Badge> : null}
                     </div>
                     <div className="mt-1 text-sm text-slate-600 truncate">{p.templeAffiliation}</div>
                     <div className="mt-2 text-xs text-slate-500">
                       ⭐ {p.rating.toFixed(1)} • {p.experienceYears}+ yrs • {p.languages.join(", ")}
                     </div>
                   </div>
-                  <Button variant="secondary" onClick={() => onContinue(tier)}>
+                  <Button size="xs" variant="secondary" onClick={() => onContinue(tier)}>
                     Select
                   </Button>
                 </div>

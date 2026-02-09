@@ -1,39 +1,64 @@
-import { cn } from "@/utils/cn";
+import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
+import { cn } from "@/lib/cn";
 
-export function Segmented({
-  value,
-  onChange,
-  options,
-  className,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string; sub?: string }[];
+interface SegmentedOption<T extends string> {
+  value: T;
+  label: string;
+  sub?: string;
+}
+
+interface SegmentedProps<T extends string> {
+  value: T;
+  onChange: (v: T) => void;
+  options: SegmentedOption<T>[];
   className?: string;
-}) {
+}
+
+export function Segmented<T extends string>({
+                                              value,
+                                              onChange,
+                                              options,
+                                              className,
+                                            }: SegmentedProps<T>) {
   return (
-    <div className={cn("grid grid-cols-3 gap-2", className)}>
+    <ToggleGroupPrimitive.Root
+      type="single"
+      value={value}
+      onValueChange={(v) => {
+        if (v) onChange(v as T);
+      }}
+      className={cn("grid grid-cols-3 gap-2", className)}
+    >
       {options.map((o) => {
         const active = o.value === value;
         return (
-          <button
+          <ToggleGroupPrimitive.Item
             key={o.value}
-            type="button"
-            onClick={() => onChange(o.value)}
+            value={o.value}
             className={cn(
-              "rounded-xl px-3 py-2 text-left ring-1 transition",
+              "rounded-xl px-3 py-3 text-left ring-1 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9933]/50",
               active
-                ? "bg-[#FF9933]/10 ring-[#FF9933]/35"
+                ? "bg-[#FF9933]/10 ring-[#FF9933]/40 shadow-sm"
                 : "bg-white hover:bg-slate-50 ring-slate-200"
             )}
           >
-            <div className="text-sm font-semibold text-slate-900">{o.label}</div>
-            {o.sub ? (
-              <div className="text-xs text-slate-500 leading-snug">{o.sub}</div>
-            ) : null}
-          </button>
+            <div className={cn(
+              "text-sm font-semibold",
+              active ? "text-[#B35300]" : "text-slate-900"
+            )}>
+              {o.label}
+            </div>
+            {o.sub && (
+              <div className={cn(
+                "text-xs leading-snug mt-0.5",
+                active ? "text-[#B35300]/70" : "text-slate-500"
+              )}>
+                {o.sub}
+              </div>
+            )}
+          </ToggleGroupPrimitive.Item>
         );
       })}
-    </div>
+    </ToggleGroupPrimitive.Root>
   );
 }

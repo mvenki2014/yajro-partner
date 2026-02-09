@@ -112,7 +112,7 @@ export function Booking({
             <div className="truncate font-semibold">Booking & scheduling</div>
             <div className="text-xs text-slate-500 truncate">Pick shubh date, time & location</div>
           </div>
-          <Badge tone="success">Shubh din</Badge>
+          <Badge variant="success">Shubh din</Badge>
         </>
       }
       footer={
@@ -148,7 +148,7 @@ export function Booking({
                   <div className="text-xs font-semibold text-slate-600">{day}</div>
                   <div className="mt-1 text-lg font-bold">{date}</div>
                   <div className="mt-1">
-                    {shubh ? <Badge tone="success">Shubh</Badge> : <Badge tone="neutral">Ok</Badge>}
+                    {shubh ? <Badge variant="success">Shubh</Badge> : <Badge variant="neutral">Ok</Badge>}
                   </div>
                 </button>
               );
@@ -214,7 +214,7 @@ export function Booking({
                 <MapUpdater center={position} />
               </MapContainer>
               <div className="absolute top-3 right-3 z-[1000]">
-                <Badge tone="neutral">Leaflet Map</Badge>
+                <Badge variant="neutral">Leaflet Map</Badge>
               </div>
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[1000] w-full px-8">
                 <div className="rounded-xl bg-white/90 backdrop-blur ring-1 ring-slate-200 px-4 py-2 text-center shadow-lg">

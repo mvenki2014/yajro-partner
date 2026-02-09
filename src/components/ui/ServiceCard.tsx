@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import { Badge } from "./Badge";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 import { ServiceCardProps } from "@/types";
 
 export function ServiceCard({
@@ -53,7 +53,8 @@ export function ServiceCard({
               {/* Popular Text - Top Right inside content */}
               {popular && (
                 <span
-                  className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600  ">Popular</span>
+                  className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600">Popular</span>
+
               )}
             </div>
 
@@ -75,7 +76,7 @@ export function ServiceCard({
                   <span className="text-[10px] font-medium text-slate-500 mr-0.5">From</span> ₹{price.toLocaleString()}
                 </span>
               </div>
-              <Badge tone="saffron"
+              <Badge variant="saffron"
                      className="px-3 py-1 text-[11px] font-bold shadow-sm hover:scale-105 transition-transform active:scale-95">
                 Book Now
               </Badge>

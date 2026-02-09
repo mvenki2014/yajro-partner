@@ -136,7 +136,7 @@ export function Home({
                 <div className="text-xs font-semibold text-slate-700">{muhurtham.label}</div>
                 <div className="text-sm font-bold text-slate-900">{muhurtham.time}</div>
               </div>
-              <Badge tone="success">Shubh</Badge>
+              <Badge variant="success">Shubh</Badge>
             </div>
             <div className="mt-1 text-xs text-slate-500">{muhurtham.note}</div>
           </div>
@@ -178,7 +178,7 @@ export function Home({
           <div className="flex items-end justify-between">
             <h2 className="text-lg font-semibold">Offers & Discounts</h2>
           </div>
-          <div className="mt-3 flex gap-3 overflow-x-auto pb-2 snap-x">
+          <div className="mt-3 flex gap-3 overflow-x-auto pb-2 snap-x scrollbar-hide">
             {[
               {
                 id: "offer1",
@@ -229,13 +229,13 @@ export function Home({
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold">Seasonal banners</h2>
-          <div className="mt-3 flex gap-3 overflow-x-auto pb-2 snap-x">
+          <h2 className="text-lg font-semibold">Seasonal Specials</h2>
+          <div className="mt-2 flex gap-3 overflow-x-auto pb-2 snap-x scrollbar-hide">
             {promoBanners.map((b) => (
-              <Card key={b.id} className="min-w-[260px] snap-start">
+              <Card key={b.id} className="min-w-[260px] snap-start overflow-hidden">
                 <div className="p-4">
                   <div className="flex items-center justify-between">
-                    <Badge tone="gold">{b.tag}</Badge>
+                    <Badge>{b.tag}</Badge>
                     <div className="text-[#B35300]">
                       <LotusIcon className="h-5 w-5" />
                     </div>
@@ -255,7 +255,7 @@ export function Home({
 
         <div>
           <div className="flex items-end justify-between">
-            <h2 className="text-lg font-semibold">Popular services</h2>
+            <h2 className="text-lg font-semibold">Popular Services</h2>
             <div className="text-xs text-slate-500">From ₹799</div>
           </div>
           <div className="mt-3 space-y-3">

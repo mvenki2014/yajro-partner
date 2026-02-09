@@ -1,12 +1,12 @@
 import * as React from "react";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/cn";
 
 export function MobileShell({
-  title,
-  children,
-  footer,
-  bottomNav,
-}: {
+                              title,
+                              children,
+                              footer,
+                              bottomNav,
+                            }: {
   title?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
@@ -15,7 +15,7 @@ export function MobileShell({
   return (
     <div className="min-h-screen bg-[#FFFBF5] text-slate-900 relative">
       <div className="mx-auto w-full max-w-[420px] min-h-screen relative shadow-2xl shadow-slate-900/5 bg-white sm:border-x border-slate-200/50">
-        
+
         {/* Decorative Top Graphic */}
         <div className="absolute top-0 inset-x-0 h-48 overflow-hidden pointer-events-none z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-[#FF9933]/20 via-[#FF9933]/5 to-transparent" />
@@ -51,7 +51,7 @@ export function MobileShell({
             </div>
           </div>
         ) : null}
-        
+
         {bottomNav ? (
           <div className="fixed inset-x-0 bottom-0 z-30">
             <div className="mx-auto w-full max-w-[420px]">
