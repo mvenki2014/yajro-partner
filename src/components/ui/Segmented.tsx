@@ -1,5 +1,5 @@
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils";
 
 interface SegmentedOption<T extends string> {
   value: T;

@@ -41,7 +41,7 @@ export const reverseGeocode = async (latitude: number, longitude: number): Promi
       
       let address = "";
       if (city || neighbourhood) {
-        address = neighbourhood ? `${neighbourhood}, ${city}` : city;
+        address = neighbourhood ? `${data.display_name}` : city;
       } else {
         address = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
       }

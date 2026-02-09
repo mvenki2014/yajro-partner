@@ -5,53 +5,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Map, MapMarker, MapControls, MarkerContent } from "@/components/ui/Map";
 import { shubhDaysISO } from "@/data/mock";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import L from "leaflet";
-import { reverseGeocode } from "@/lib/location";
-
-// Fix Leaflet marker icon issue
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-const DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
-
-function MapUpdater({ center }: { center: [number, number] }) {
-  const map = useMapEvents({});
-  React.useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
-  return null;
-}
-
-function LocationMarker({ 
-  position, 
-  setPosition,
-  onLocationChange
-}: { 
-  position: [number, number], 
-  setPosition: (pos: [number, number]) => void,
-  onLocationChange: (address: string) => void
-}) {
-  useMapEvents({
-    click(e) {
-      const newPos: [number, number] = [e.latlng.lat, e.latlng.lng];
-      setPosition(newPos);
-      reverseGeocode(newPos[0], newPos[1]).then(data => {
-        if (data) onLocationChange(data.address);
-      });
-    },
-  });
-
-  return position ? <Marker position={position} /> : null;
-}
+import {reverseGeocode} from "@/lib/location";
+import { MapPin } from "lucide-react";
 
 function toISO(d: Date) {
   const yyyy = d.getFullYear();
@@ -67,9 +25,9 @@ const timeSlots = [
 ] as const;
 
 export function Booking({
-  onBack,
-  onConfirm,
-}: {
+                          onBack,
+                          onConfirm,
+                        }: {
   onBack: () => void;
   onConfirm: () => void;
 }) {
@@ -81,8 +39,8 @@ export function Booking({
   );
   const [address, setAddress] = React.useState(locationData?.address || "Plot 12, Lakshmi Nagar, Hyderabad");
   const [position, setPosition] = React.useState<[number, number]>(
-    locationData?.latitude && locationData?.longitude 
-      ? [locationData.latitude, locationData.longitude] 
+    locationData?.latitude && locationData?.longitude
+      ? [locationData.latitude, locationData.longitude]
       : [17.4483, 78.3915]
   );
 
@@ -189,37 +147,68 @@ export function Booking({
           <Card className="mt-3 overflow-hidden">
             <div className="p-4">
               <label className="text-xs font-semibold text-slate-600">Address</label>
-              <input
+              <Input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mt-2 w-full rounded-xl bg-white px-3 py-2.5 text-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-[#FF9933]/45"
+                className="mt-2"
               />
             </div>
             <div className="h-64 relative">
-              <MapContainer 
-                center={position} 
-                zoom={15} 
-                style={{ height: "100%", width: "100%" }}
-                zoomControl={false}
+              <Map
+                center={[position[1], position[0]]}
+                zoom={15}
+                onClick={(e) => {
+                  const newPos: [number, number] = [e.lngLat.lat, e.lngLat.lng];
+                  setPosition(newPos);
+                  reverseGeocode(newPos[0], newPos[1]).then((data) => {
+                    if (data) {
+                      console.log('Address data:', data);
+                      setAddress(data.address);
+                    }
+                  });
+                }}
               >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <LocationMarker 
-                  position={position} 
-                  setPosition={setPosition}
-                  onLocationChange={setAddress}
-                />
-                <MapUpdater center={position} />
-              </MapContainer>
-              <div className="absolute top-3 right-3 z-[1000]">
-                <Badge variant="neutral">Leaflet Map</Badge>
-              </div>
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[1000] w-full px-8">
-                <div className="rounded-xl bg-white/90 backdrop-blur ring-1 ring-slate-200 px-4 py-2 text-center shadow-lg">
-                  <div className="text-[11px] font-semibold text-slate-700 leading-tight">Tap on map to pin your location</div>
-                </div>
+                <MapControls position="top-right" showZoom showLocate />
+
+                {/* Current Location Marker (Blue Ball) */}
+                {locationData?.latitude && locationData?.longitude && (
+                  <MapMarker
+                    longitude={locationData.longitude}
+                    latitude={locationData.latitude}
+                  >
+                    <MarkerContent>
+                      <div className="relative flex h-4 w-4">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-600 border-2 border-white shadow-sm"></span>
+                      </div>
+                    </MarkerContent>
+                  </MapMarker>
+                )}
+
+                <MapMarker
+                  draggable
+                  longitude={position[1]}
+                  latitude={position[0]}
+                  onDragEnd={(lngLat) => {
+                    const newPos: [number, number] = [lngLat.lat, lngLat.lng];
+                    setPosition(newPos);
+                    reverseGeocode(newPos[0], newPos[1]).then((data) => {
+                      if (data) setAddress(data.address);
+                    });
+                  }}
+                >
+                  <MarkerContent>
+                    <div className="cursor-move">
+                      <MapPin
+                        className="fill-[#FF9933] stroke-white"
+                        size={28}
+                      />
+                    </div>
+                  </MarkerContent>
+                </MapMarker>
+              </Map>
+              <div className="absolute top-3 left-3 z-10">
+                <Badge variant="neutral">Map CN</Badge>
               </div>
             </div>
           </Card>
