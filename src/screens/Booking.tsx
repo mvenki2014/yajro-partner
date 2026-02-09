@@ -1,15 +1,12 @@
 import * as React from "react";
 import { MobileShell } from "@/components/layout/MobileShell";
 import { Badge } from "@/components/ui/Badge";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
-import { Map, MapMarker, MapControls, MarkerContent } from "@/components/ui/Map";
+import { setLocation } from "@/store/slices/locationSlice";
+import { LocationPicker } from "@/components/ui/LocationPicker";
 import { shubhDaysISO } from "@/data/mock";
-import {reverseGeocode} from "@/lib/location";
-import { MapPin } from "lucide-react";
 
 function toISO(d: Date) {
   const yyyy = d.getFullYear();
@@ -32,17 +29,34 @@ export function Booking({
   onConfirm: () => void;
 }) {
   const today = new Date();
+  const dispatch = useDispatch<AppDispatch>();
   const locationData = useSelector((state: RootState) => state.location.data);
   const [selectedDate, setSelectedDate] = React.useState(toISO(today));
   const [slot, setSlot] = React.useState<string>(
     "morning"
   );
   const [address, setAddress] = React.useState(locationData?.address || "Plot 12, Lakshmi Nagar, Hyderabad");
+  const [locationType, setLocationType] = React.useState(locationData?.locationType || "Home");
+  const [isLocationExpanded, setIsLocationExpanded] = React.useState(false);
   const [position, setPosition] = React.useState<[number, number]>(
     locationData?.latitude && locationData?.longitude
       ? [locationData.latitude, locationData.longitude]
       : [17.4483, 78.3915]
   );
+
+  const persistSelectedLocation = React.useCallback(() => {
+    dispatch(
+      setLocation({
+        address,
+        latitude: position[0],
+        longitude: position[1],
+        locationType,
+        city: locationData?.city,
+        neighbourhood: locationData?.neighbourhood,
+        ip: locationData?.ip,
+      })
+    );
+  }, [dispatch, address, position, locationType, locationData]);
 
   const next7 = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date(today);
@@ -58,7 +72,11 @@ export function Booking({
         <>
           <button
             type="button"
-            onClick={onBack}
+            onClick={() => {
+              // Ensure the latest committed address/position are persisted before navigating back
+              persistSelectedLocation();
+              onBack();
+            }}
             className="rounded-xl p-2 hover:bg-slate-900/5"
             aria-label="Back"
           >
@@ -74,22 +92,28 @@ export function Booking({
         </>
       }
       footer={
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <div className="text-xs text-slate-500">Next</div>
-            <div className="text-sm font-semibold">Checkout & tracking</div>
+        (
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-xs text-slate-500">Next</div>
+              <div className="text-sm font-semibold">Checkout & tracking</div>
+            </div>
+            <Button onClick={() => {
+              // Persist before moving forward
+              persistSelectedLocation();
+              onConfirm();
+            }}>Continue</Button>
           </div>
-          <Button onClick={onConfirm}>Continue</Button>
-        </div>
+        )
       }
     >
       <div className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold">Choose date</h2>
           <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
-            {next7.map(({ iso, d, shubh }) => {
+            {next7.map(({iso, d, shubh}) => {
               const active = iso === selectedDate;
-              const day = d.toLocaleDateString(undefined, { weekday: "short" });
+              const day = d.toLocaleDateString(undefined, {weekday: "short"});
               const date = d.getDate();
               return (
                 <button
@@ -97,7 +121,7 @@ export function Booking({
                   type="button"
                   onClick={() => setSelectedDate(iso)}
                   className={
-                    "min-w-[84px] rounded-2xl p-3 text-left ring-1 transition " +
+                    "min-w-[84px] mt-1 rounded-2xl p-3 text-left ring-1 transition " +
                     (active
                       ? "bg-[#FF9933]/12 ring-[#FF9933]/35"
                       : "bg-white ring-slate-200 hover:bg-slate-50")
@@ -143,76 +167,60 @@ export function Booking({
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold">Location</h2>
-          <Card className="mt-3 overflow-hidden">
-            <div className="p-4">
-              <label className="text-xs font-semibold text-slate-600">Address</label>
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="mt-2"
-              />
-            </div>
-            <div className="h-64 relative">
-              <Map
-                center={[position[1], position[0]]}
-                zoom={15}
-                onClick={(e) => {
-                  const newPos: [number, number] = [e.lngLat.lat, e.lngLat.lng];
-                  setPosition(newPos);
-                  reverseGeocode(newPos[0], newPos[1]).then((data) => {
-                    if (data) {
-                      console.log('Address data:', data);
-                      setAddress(data.address);
-                    }
-                  });
-                }}
-              >
-                <MapControls position="top-right" showZoom showLocate />
-
-                {/* Current Location Marker (Blue Ball) */}
-                {locationData?.latitude && locationData?.longitude && (
-                  <MapMarker
-                    longitude={locationData.longitude}
-                    latitude={locationData.latitude}
-                  >
-                    <MarkerContent>
-                      <div className="relative flex h-4 w-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-600 border-2 border-white shadow-sm"></span>
-                      </div>
-                    </MarkerContent>
-                  </MapMarker>
-                )}
-
-                <MapMarker
-                  draggable
-                  longitude={position[1]}
-                  latitude={position[0]}
-                  onDragEnd={(lngLat) => {
-                    const newPos: [number, number] = [lngLat.lat, lngLat.lng];
-                    setPosition(newPos);
-                    reverseGeocode(newPos[0], newPos[1]).then((data) => {
-                      if (data) setAddress(data.address);
-                    });
-                  }}
-                >
-                  <MarkerContent>
-                    <div className="cursor-move">
-                      <MapPin
-                        className="fill-[#FF9933] stroke-white"
-                        size={28}
-                      />
-                    </div>
-                  </MarkerContent>
-                </MapMarker>
-              </Map>
-              <div className="absolute top-3 left-3 z-10">
-                <Badge variant="neutral">Map CN</Badge>
-              </div>
-            </div>
-          </Card>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Pooja Location</h2>
+            <button
+              type="button"
+              onClick={() => setIsLocationExpanded(!isLocationExpanded)}
+              className="text-xs font-semibold text-[#B35300] hover:underline"
+            >
+              {isLocationExpanded ? "Close" : "Change"}
+            </button>
+          </div>
+          <div className="mt-3">
+            <LocationPicker
+              address={address}
+              position={position}
+              locationData={locationData}
+              locationType={locationType}
+              onLocationTypeChange={(type) => {
+                setLocationType(type);
+                // Immediately persist type change to Redux
+                dispatch(
+                  setLocation({
+                    address,
+                    latitude: position[0],
+                    longitude: position[1],
+                    locationType: type,
+                    city: locationData?.city,
+                    neighbourhood: locationData?.neighbourhood,
+                    ip: locationData?.ip,
+                  })
+                );
+              }}
+              isExpanded={isLocationExpanded}
+              onExpandedChange={setIsLocationExpanded}
+              onLocationChange={(newAddress, newPos) => {
+                setAddress(newAddress);
+                setPosition(newPos);
+                // Persist to Redux so it survives navigation/back/front
+                dispatch(
+                  setLocation({
+                    address: newAddress,
+                    latitude: newPos[0],
+                    longitude: newPos[1],
+                    locationType,
+                    city: locationData?.city,
+                    neighbourhood: locationData?.neighbourhood,
+                    ip: locationData?.ip,
+                  })
+                );
+              }}
+            />
+          </div>
         </div>
+
+
       </div>
     </MobileShell>
   );

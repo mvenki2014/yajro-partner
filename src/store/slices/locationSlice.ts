@@ -49,6 +49,12 @@ const locationSlice = createSlice({
       state.data = null;
       state.lastUpdated = null;
     },
+    setLocation: (state, action: PayloadAction<LocationData>) => {
+      state.data = action.payload;
+      state.lastUpdated = Date.now();
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -68,5 +74,5 @@ const locationSlice = createSlice({
   },
 });
 
-export const { clearLocation } = locationSlice.actions;
+export const { clearLocation, setLocation } = locationSlice.actions;
 export default locationSlice.reducer;

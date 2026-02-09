@@ -5,6 +5,7 @@ export interface LocationData {
   latitude?: number;
   longitude?: number;
   ip?: string;
+  locationType?: string;
 }
 
 export const getIPLocation = async (ip?: string): Promise<LocationData | null> => {
