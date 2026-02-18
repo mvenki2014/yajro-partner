@@ -7,6 +7,7 @@ import { setLocation } from "@/store/slices/locationSlice";
 import { LocationPicker } from "@/components/ui/LocationPicker";
 import { shubhDaysISO } from "@/data/mock";
 import { cn } from "@/lib/utils";
+import { fetchTimeSlots, Slot } from "@/lib/api";
 
 function toISO(d: Date) {
   const yyyy = d.getFullYear();
@@ -15,14 +16,6 @@ function toISO(d: Date) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-const timeSlots = [
-  { id: "00-04", label: "00 - 04", sub: "Early Morning" },
-  { id: "04-08", label: "04 - 08", sub: "Dawn" },
-  { id: "08-12", label: "08 - 12", sub: "Morning" },
-  { id: "12-16", label: "12 - 16", sub: "Afternoon" },
-  { id: "16-20", label: "16 - 20", sub: "Evening" },
-  { id: "20-24", label: "20 - 24", sub: "Night" },
-] as const;
 
 export function Booking({
   serviceId,
@@ -38,6 +31,7 @@ export function Booking({
   const today = new Date();
   const dispatch = useDispatch<AppDispatch>();
   const locationData = useSelector((state: RootState) => state.location.data);
+  const [timeSlots, setTimeSlots] = React.useState<Slot[]>([]);
   const [selectedDate, setSelectedDate] = React.useState(locationData?.selectedDate || toISO(today));
   const [slot, setSlot] = React.useState<string>(
     locationData?.slot || "08-12"
@@ -50,6 +44,14 @@ export function Booking({
       ? [locationData.latitude, locationData.longitude]
       : [17.4483, 78.3915]
   );
+
+  React.useEffect(() => {
+    const getSlots = async () => {
+      const slots = await fetchTimeSlots();
+      setTimeSlots(slots);
+    };
+    getSlots();
+  }, []);
 
   const persistSelectedLocation = React.useCallback(() => {
     dispatch(

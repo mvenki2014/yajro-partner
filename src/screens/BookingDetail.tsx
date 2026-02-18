@@ -5,6 +5,42 @@ import { Button } from "@/components/ui/Button";
 import { services } from "@/data/mock";
 import { Calendar, MapPin, Clock, Phone, MessageSquare, Info } from "lucide-react";
 
+const sampleBookings = [
+  {
+    id: "BK-882731",
+    serviceId: "satyanarayana-vratam",
+    date: "2026-02-10",
+    slot: "08-12",
+    status: "In Progress",
+    address: "Plot 12, Lakshmi Nagar, Kondapur, Hyderabad, 500084",
+    price: 2299,
+    tierName: "Standard",
+    bookingDate: "2026-02-08 14:30",
+  },
+  {
+    id: "BK-771209",
+    serviceId: "griha-pravesh",
+    date: "2026-01-15",
+    slot: "04-08",
+    status: "Completed",
+    address: "Flat 401, Sri Krishna Residency, Banjara Hills, Hyderabad",
+    price: 4299,
+    tierName: "Premium",
+    bookingDate: "2026-01-12 10:15",
+  },
+  {
+    id: "BK-665412",
+    serviceId: "car-pooja",
+    date: "2025-12-20",
+    slot: "12-16",
+    status: "Completed",
+    address: "Kondapur, Hyderabad",
+    price: 1199,
+    tierName: "Basic",
+    bookingDate: "2025-12-18 16:45",
+  },
+];
+
 export function BookingDetail({
   bookingId,
   onBack,
@@ -14,21 +50,7 @@ export function BookingDetail({
   onBack: () => void;
   onTrack: (serviceId: string) => void;
 }) {
-  // Sample data for the specific booking
-  // In a real app, this would be fetched based on bookingId
-  const booking = {
-    id: bookingId,
-    serviceId: "satyanarayana-vratam",
-    date: "2026-02-10",
-    slot: "08-12",
-    status: "In Progress",
-    address: "Plot 12, Lakshmi Nagar, Kondapur, Hyderabad, 500084",
-    price: 2299,
-    tierName: "Standard",
-    paymentStatus: "Paid",
-    bookingDate: "2026-02-08 14:30",
-  };
-
+  const booking = sampleBookings.find((b) => b.id === bookingId) || sampleBookings[0];
   const service = services.find((s) => s.id === booking.serviceId) ?? services[0];
   const isInProgress = booking.status === "In Progress";
 

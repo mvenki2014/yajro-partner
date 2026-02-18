@@ -52,9 +52,9 @@ export function ServiceCard({
 
               {/* Popular Text - Top Right inside content */}
               {popular && (
-                <span
-                  className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600">Popular</span>
-
+                <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600">
+                  Popular
+                </span>
               )}
             </div>
 
