@@ -1,9 +1,12 @@
+import * as React from "react";
 import { MobileShell } from "@/components/layout/MobileShell";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { NotificationSettingsDialog } from "@/components/account/NotificationSettingsDialog";
 import { Tab } from "@/types";
+import packageJson from "../../package.json";
 import { 
   User, 
   MapPin, 
@@ -39,13 +42,26 @@ export function Account({
     subscription: "Premium" as "Basic" | "Premium"
   };
 
+  const [isNotificationsDialogOpen, setIsNotificationsDialogOpen] = React.useState(false);
+  const [notificationSettings, setNotificationSettings] = React.useState({
+    push: true,
+    email: false,
+    offers: true,
+    reminders: true,
+  });
+
   const menuGroups = [
     {
       title: "Profile Settings",
       items: [
         { icon: <User className="h-5 w-5 text-blue-500" />, label: "Personal Information", extra: "Edit profile", onClick: onEditProfile },
         { icon: <MapPin className="h-5 w-5 text-red-500" />, label: "Saved Addresses", extra: "3 addresses" },
-        { icon: <Bell className="h-5 w-5 text-orange-500" />, label: "Notifications", extra: "On" },
+        { 
+          icon: <Bell className="h-5 w-5 text-orange-500" />, 
+          label: "Notifications", 
+          extra: notificationSettings.push ? "On" : "Off",
+          onClick: () => setIsNotificationsDialogOpen(true)
+        },
       ]
     },
     {
@@ -60,7 +76,7 @@ export function Account({
       title: "Support & About",
       items: [
         { icon: <HelpCircle className="h-5 w-5 text-purple-500" />, label: "Help & Support", extra: "" },
-        { icon: <Info className="h-5 w-5 text-slate-500" />, label: "About Yajro", extra: "v1.0.4" },
+        { icon: <Info className="h-5 w-5 text-slate-500" />, label: "About Yajro", extra: `v${packageJson.version}` },
       ]
     }
   ];
@@ -164,6 +180,12 @@ export function Account({
           </p>
         </div>
       </div>
+      <NotificationSettingsDialog 
+        open={isNotificationsDialogOpen}
+        onOpenChange={setIsNotificationsDialogOpen}
+        settings={notificationSettings}
+        onSettingsChange={setNotificationSettings}
+      />
     </MobileShell>
   );
 }

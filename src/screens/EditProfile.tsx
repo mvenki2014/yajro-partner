@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { User, Mail, Phone, Camera, ChevronLeft } from "lucide-react";
-import {Badge} from "@/components/ui/Badge.tsx";
+import {Badge} from "@/components/ui/Badge";
+import {Label} from "@/components/ui/Label";
 
 export function EditProfile({
   user,
@@ -71,9 +72,9 @@ export function EditProfile({
         <Card className="p-5 border-slate-100 shadow-xl shadow-slate-200/40">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+              <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
                 Full Name
-              </label>
+              </Label>
               <Input
                 icon={<User className="h-4 w-4" />}
                 value={formData.name}
@@ -84,9 +85,9 @@ export function EditProfile({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+              <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
                 Email Address
-              </label>
+              </Label>
               <Input
                 type="email"
                 icon={<Mail className="h-4 w-4" />}
@@ -98,9 +99,9 @@ export function EditProfile({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+              <Label className="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">
                 Phone Number
-              </label>
+              </Label>
               <Input
                 type="tel"
                 icon={<Phone className="h-4 w-4" />}
