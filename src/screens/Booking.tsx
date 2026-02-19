@@ -18,8 +18,6 @@ function toISO(d: Date) {
 
 
 export function Booking({
-  serviceId,
-  tierId,
   onBack,
   onConfirm,
 }: {
