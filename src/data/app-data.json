@@ -1,11 +1,11 @@
 {
   "categories": [
-    { "id": "car-bike", "name": "Car/Bike Pooja", "icon": "diya" },
-    { "id": "home-ceremonies", "name": "Home Ceremonies", "icon": "kalash" },
-    { "id": "festivals", "name": "Festivals", "icon": "lotus" },
-    { "id": "astrology", "name": "Astrology", "icon": "stars" },
-    { "id": "special", "name": "Special", "icon": "temple" },
-    { "id": "business", "name": "Business", "icon": "kalash" }
+    { "id": "home-ceremonies", "name": "House", "icon": "/images/home.gif" },
+    { "id": "car-bike", "name": "Car/Bike Pooja", "icon": "/images/taxi.gif" },
+    { "id": "festivals", "name": "Festivals", "icon": "/images/diya-lamp.gif" },
+    { "id": "astrology", "name": "Astrology", "icon": "/images/sun.gif" },
+    { "id": "special", "name": "Special", "icon": "/images/fire-pit.gif" },
+    { "id": "business", "name": "Business", "icon": "/images/work.gif" }
   ],
   "services": [
     {
@@ -275,12 +275,21 @@
       "id": "ganesh",
       "title": "Ganesh Chaturthi Specials",
       "subtitle": "Book early & get 10% off on Samagri bundles",
+      "image": "/images/pooja/ganesh-pooja.jpg",
       "tag": "Seasonal"
     },
     {
       "id": "navaratri",
       "title": "Navaratri Home Poojas",
       "subtitle": "Daily arati support + prasadam checklist",
+      "image": "/images/pooja/navaratri-pooja.jpg",
+      "tag": "Popular"
+    },
+    {
+      "id": "navagraha",
+      "title": "Navagraha Poojas",
+      "subtitle": "Samagri included + 10% off on all packages",
+      "image": "/images/pooja/navagraha-pooja.jpg",
       "tag": "Popular"
     }
   ],

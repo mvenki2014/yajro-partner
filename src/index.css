@@ -8,24 +8,38 @@
 /* NATIVE APP FEEL FIXES */
 /* ------------------------------------------------ */
 
-/* Prevent iOS rubber-band bounce */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
 html,
-body {
-  height: 100%;
-  margin: 0;
-  overscroll-behavior: none;
-  -webkit-text-size-adjust: 100%;
-}
-
-/* Lock body scroll */
-body {
-  overflow: hidden;
-}
-
-/* Enable controlled scrolling inside React root */
+body,
 #root {
   height: 100%;
-  overflow-y: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+.app-container {
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+}
+
+/* Ensure child fills available space */
+#root > div {
+  height: 100%;
+}
+
+/* Enable controlled scrolling inside containers only */
+.overflow-y-auto {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
 }
@@ -33,25 +47,6 @@ body {
 /* Remove tap highlight */
 * {
   -webkit-tap-highlight-color: transparent;
-}
-/* ----------------------------- */
-/* NATIVE APP SCROLL FIX (iOS) */
-/* ----------------------------- */
-
-html, body {
-  height: 100%;
-  width: 100%;
-  position: fixed;   /* IMPORTANT */
-  overflow: hidden;  /* lock body */
-  overscroll-behavior: none;
-  -webkit-text-size-adjust: 100%;
-}
-
-#root {
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* ------------------------------------------------ */

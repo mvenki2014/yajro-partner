@@ -22,6 +22,8 @@ const buttonVariants = cva(
           "text-[#B35300] underline-offset-4 hover:underline",
         destructive:
           "bg-red-500 text-white shadow-sm hover:bg-red-600",
+        success:
+          "bg-emerald-500 text-white shadow-sm hover:bg-emerald-600",
       },
       size: {
         default: "h-11 px-5 py-2.5",

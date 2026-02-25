@@ -39,12 +39,14 @@ export const reverseGeocode = async (latitude: number, longitude: number): Promi
     const data = await response.json();
     
     if (data.address) {
-      const city = data.address.city || data.address.town || data.address.village || data.address.suburb || "";
-      const neighbourhood = data.address.neighbourhood || data.address.suburb || "";
+      const city = data.address.city || data.address.town || data.address.village || "";
+      const suburb = data.address.suburb || data.address.neighbourhood || "";
       
       let address = "";
-      if (city || neighbourhood) {
-        address = neighbourhood ? `${data.display_name}` : city;
+      if (suburb && city && suburb !== city) {
+        address = `${suburb}, ${city}`;
+      } else if (suburb || city) {
+        address = suburb || city;
       } else {
         address = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
       }
@@ -52,7 +54,7 @@ export const reverseGeocode = async (latitude: number, longitude: number): Promi
       return {
         address,
         city,
-        neighbourhood,
+        neighbourhood: suburb,
         latitude,
         longitude
       };

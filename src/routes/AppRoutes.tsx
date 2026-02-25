@@ -11,26 +11,26 @@ interface AppRoutesProps {
 
 export function AppRoutes({ user, setUser }: AppRoutesProps) {
   const navigate = useNavigate();
-  const [selectedServiceId, setSelectedServiceId] = React.useState(
-    "satyanarayana-vratam"
-  );
 
-  const handleNavigation = (page: string, categoryId?: string) => {
+  const handleNavigation = (page: string) => {
     switch (page) {
-      case "home":
+      case "dashboard":
         navigate("/");
         break;
       case "services":
-        navigate(categoryId ? `/services?category=${categoryId}` : "/services");
+        navigate("/services");
         break;
-      case "bookings":
-        navigate("/bookings");
+      case "orders":
+        navigate("/orders");
         break;
-      case "tracking":
-        navigate(`/track/${selectedServiceId}?tier=standard`);
+      case "earnings":
+        navigate("/earnings");
         break;
-      case "account":
-        navigate("/account");
+      case "profile":
+        navigate("/profile");
+        break;
+      case "availability":
+        navigate("/availability");
         break;
       default:
         navigate("/");
@@ -54,7 +54,6 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
                 route={route}
                 user={user}
                 setUser={setUser}
-                setSelectedServiceId={setSelectedServiceId}
                 handleNavigation={handleNavigation}
               />
             );
@@ -63,13 +62,7 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
               <Route
                 key={route.path}
                 path={route.path}
-                element={
-                  route.protected ? (
-                    <ProtectedRoute>{RouteElement}</ProtectedRoute>
-                  ) : (
-                    RouteElement
-                  )
-                }
+                element={route.protected ? <ProtectedRoute>{RouteElement}</ProtectedRoute> : RouteElement}
               />
             );
           })}
@@ -80,7 +73,7 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
   );
 }
 
-function RouteWrapper({ route, user, setUser, setSelectedServiceId, handleNavigation }: any) {
+function RouteWrapper({ route, user, setUser, handleNavigation }: any) {
   const params = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -89,7 +82,6 @@ function RouteWrapper({ route, user, setUser, setSelectedServiceId, handleNaviga
     ? route.props(params, searchParams, navigate, {
         user,
         setUser,
-        setSelectedServiceId,
         handleNavigation,
       })
     : {};

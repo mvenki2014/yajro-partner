@@ -46,23 +46,20 @@ const offers: Offer[] = [
 
 export function OffersSection() {
   return (
-    <div>
-      <div className="flex items-end justify-between">
-        <h2 className="text-lg font-semibold">Offers & Discounts</h2>
+    <div className="mb-1">
+      <div className="flex items-end justify-between mb-2">
+        <label className="text-base font-semibold block">
+          Offers & Discounts
+        </label>
       </div>
-      <div className="mt-3 flex gap-3 overflow-x-auto pb-2 snap-x scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-2 snap-x scrollbar-hide">
         {offers.map((o) => (
-          <Card key={o.id} className={`min-w-[240px] ring-0 shadow-none snap-start rounded-2xl border border-dashed ${o.border} ${o.bg} p-4 relative overflow-hidden`}>
-            <div className={`absolute -right-4 -top-4 w-16 h-16 rounded-full ${o.border} border border-dashed opacity-50`} />
+          <Card key={o.id} className={`min-w-[180px] ring-0 shadow-none snap-start rounded-2xl border border-dashed ${o.border} ${o.bg} p-3 relative overflow-hidden`}>
             <div className={`text-sm font-bold ${o.text}`}>{o.title}</div>
-            <div className="mt-1 text-xs text-slate-600 line-clamp-2 pr-4">{o.desc}</div>
-            <div className="mt-3 flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between">
               <div className={`px-2.5 py-1 text-xs font-bold tracking-widest rounded-sm ${o.codeBg} ${o.text}`}>
                 {o.code}
               </div>
-              <button className={`text-xs font-semibold hover:underline ${o.text}`}>
-                Copy
-              </button>
             </div>
           </Card>
         ))}

@@ -26,7 +26,7 @@ export function ServiceCard({
   const displayDuration = formatDuration(duration);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden shadow-sm">
       <button
         type="button"
         onClick={() => onSelect(id)}

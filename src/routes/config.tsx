@@ -1,16 +1,11 @@
 import * as React from "react";
-import { Home } from "@/screens/Home";
-import { Services } from "@/screens/Services";
-import { ServiceDetail } from "@/screens/ServiceDetail";
-import { Booking } from "@/screens/Booking";
-import { CheckoutTracking } from "@/screens/CheckoutTracking";
-import { Track } from "@/screens/Track";
-import { PaymentSuccess } from "@/screens/PaymentSuccess";
-import { Bookings } from "@/screens/Bookings";
-import { BookingDetail } from "@/screens/BookingDetail";
-import { Account } from "@/screens/Account";
-import { EditProfile } from "@/screens/EditProfile";
 import { Login } from "@/screens/Login";
+import { PartnerDashboard } from "@/screens/PartnerDashboard";
+import { PartnerServices } from "@/screens/PartnerServices";
+import { PartnerOrders } from "@/screens/PartnerOrders";
+import { PartnerEarnings } from "@/screens/PartnerEarnings";
+import { PartnerProfile } from "@/screens/PartnerProfile";
+import { PartnerAvailability } from "@/screens/PartnerAvailability";
 
 export interface RouteConfig {
   path: string;
@@ -33,125 +28,41 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/",
     protected: true,
-    element: Home,
-    props: (_, __, navigate, { setSelectedServiceId, handleNavigation }) => ({
-      onSelectService: (serviceId: string) => {
-        setSelectedServiceId(serviceId);
-        navigate(`/service/${serviceId}`);
-      },
-      onOpenBooking: (selectedServiceId: string) => {
-        navigate(`/booking/${selectedServiceId}?tier=standard`);
-      },
+    element: PartnerDashboard,
+    props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
   },
   {
     path: "/services",
     protected: true,
-    element: Services,
-    props: (_, searchParams, navigate, { setSelectedServiceId, handleNavigation }) => ({
-      initialCategory: searchParams.get("category") || undefined,
-      onSelectService: (serviceId: string) => {
-        setSelectedServiceId(serviceId);
-        navigate(`/service/${serviceId}`);
-      },
+    element: PartnerServices,
+    props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
   },
   {
-    path: "/service/:serviceId",
+    path: "/orders",
     protected: true,
-    element: ServiceDetail,
-    props: (params, _, navigate) => ({
-      serviceId: params.serviceId!,
-      onBack: () => navigate("/services"),
-      onContinue: (tierId: string) => {
-        navigate(`/booking/${params.serviceId}?tier=${tierId}`);
-      },
-    }),
-  },
-  {
-    path: "/booking/:serviceId",
-    protected: true,
-    element: Booking,
-    props: (params, searchParams, navigate) => ({
-      serviceId: params.serviceId!,
-      tierId: searchParams.get("tier") || "standard",
-      onBack: () => navigate(`/service/${params.serviceId}`),
-      onConfirm: () => navigate(`/checkout/${params.serviceId}?tier=${searchParams.get("tier") || "standard"}`),
-    }),
-  },
-  {
-    path: "/checkout/:serviceId",
-    protected: true,
-    element: CheckoutTracking,
-    props: (params, searchParams, navigate) => ({
-      serviceId: params.serviceId!,
-      tierId: searchParams.get("tier") || "standard",
-      onBack: () => navigate(`/booking/${params.serviceId}?tier=${searchParams.get("tier") || "standard"}`),
-      onConfirm: () => {
-        navigate(`/payment-success/${params.serviceId}?tier=${searchParams.get("tier") || "standard"}`);
-      },
-    }),
-  },
-  {
-    path: "/payment-success/:serviceId",
-    protected: true,
-    element: PaymentSuccess,
-    props: (params, searchParams, navigate, { handleNavigation }) => ({
-      serviceId: params.serviceId!,
-      onTrack: () => {
-        navigate(`/track/${params.serviceId}?tier=${searchParams.get("tier") || "standard"}`);
-      },
+    element: PartnerOrders,
+    props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
   },
   {
-    path: "/track/:serviceId",
+    path: "/earnings",
     protected: true,
-    element: Track,
-    props: (params, _, navigate, { handleNavigation }) => ({
-      serviceId: params.serviceId!,
+    element: PartnerEarnings,
+    props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
-      onHome: () => navigate("/"),
     }),
   },
   {
-    path: "/bookings",
+    path: "/profile",
     protected: true,
-    element: Bookings,
-    props: (_, __, navigate, { setSelectedServiceId, handleNavigation }) => ({
+    element: PartnerProfile,
+    props: (_, __, navigate, { handleNavigation, setUser }) => ({
       onNavigate: handleNavigation,
-      onTrackService: (serviceId: string) => {
-        setSelectedServiceId(serviceId);
-        navigate(`/track/${serviceId}?tier=standard`);
-      },
-      onViewDetail: (bookingId: string) => {
-        navigate(`/booking-detail/${bookingId}`);
-      },
-    }),
-  },
-  {
-    path: "/booking-detail/:bookingId",
-    protected: true,
-    element: BookingDetail,
-    props: (params, _, navigate, { setSelectedServiceId }) => ({
-      bookingId: params.bookingId!,
-      onBack: () => navigate("/bookings"),
-      onTrack: (serviceId: string) => {
-        setSelectedServiceId(serviceId);
-        navigate(`/track/${serviceId}?tier=standard`);
-      },
-    }),
-  },
-  {
-    path: "/account",
-    protected: true,
-    element: Account,
-    props: (_, __, navigate, { user, setUser, handleNavigation }) => ({
-      onNavigate: handleNavigation,
-      user: user,
-      onEditProfile: () => navigate("/edit-profile"),
       onLogout: () => {
         setUser(null);
         navigate("/login");
@@ -159,20 +70,11 @@ export const routesConfig: RouteConfig[] = [
     }),
   },
   {
-    path: "/edit-profile",
+    path: "/availability",
     protected: true,
-    element: EditProfile,
-    props: (_, __, navigate, { user, setUser }) => ({
-      user: user,
-      onBack: () => navigate("/account"),
-      onSave: (updatedUser: any) => {
-        setUser({
-          ...user!,
-          name: updatedUser.name,
-          email: updatedUser.email,
-        });
-        navigate("/account");
-      },
+    element: PartnerAvailability,
+    props: (_, __, navigate) => ({
+      onBack: () => navigate("/"),
     }),
   },
 ];

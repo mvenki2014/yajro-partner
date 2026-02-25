@@ -19,8 +19,8 @@ export function MobileShell({
   const footer = footerProp !== undefined ? footerProp : contextFooter;
   const bottomNav = bottomNavProp !== undefined ? bottomNavProp : contextBottomNav;
   return (
-    <div className="min-h-screen bg-[#FFFBF5] text-slate-900 relative">
-      <div className="mx-auto w-full max-w-[420px] min-h-screen relative shadow-2xl shadow-slate-900/5 bg-white sm:border-x border-slate-200/50">
+    <div className="app-container flex flex-col h-full bg-[#FFFBF5] text-slate-900">
+      <div className="mx-auto w-full max-w-[420px] flex-1 flex flex-col relative shadow-2xl shadow-slate-900/5 bg-white sm:border-x border-slate-200/50 overflow-hidden">
 
         {/* Decorative Top Graphic */}
         <div className="absolute top-0 inset-x-0 h-48 overflow-hidden pointer-events-none z-0">
@@ -49,25 +49,26 @@ export function MobileShell({
           </div>
         </header>
 
-        <main className={cn("px-4 py-4 relative z-10", footer || bottomNav ? "pb-24" : "pb-4")}>{children}</main>
+        <main className="flex-1 overflow-y-auto px-4 py-4 relative z-10">
+          {children}
+        </main>
 
-        {footer ? (
-          <div className="fixed inset-x-0 bottom-0 z-30 pointer-events-none">
-            <div className="mx-auto w-full max-w-[420px] px-4 pb-4">
-              <div className="rounded-2xl bg-white/90 backdrop-blur ring-1 ring-slate-200 shadow-lg shadow-slate-900/5 p-3 pointer-events-auto">
-                {footer}
+        {(footer || bottomNav) && (
+          <footer className="shrink-0 z-30">
+            {footer && (
+              <div className="mx-auto w-full max-w-[420px] px-4 pb-4">
+                <div className="rounded-2xl bg-white/90 backdrop-blur ring-1 ring-slate-200 shadow-lg shadow-slate-900/5 p-3 pointer-events-auto">
+                  {footer}
+                </div>
               </div>
-            </div>
-          </div>
-        ) : null}
-
-        {bottomNav ? (
-          <div className="fixed inset-x-0 bottom-0 z-30">
-            <div className="mx-auto w-full max-w-[420px]">
-              {bottomNav}
-            </div>
-          </div>
-        ) : null}
+            )}
+            {bottomNav && (
+              <div className="mx-auto w-full max-w-[420px]">
+                {bottomNav}
+              </div>
+            )}
+          </footer>
+        )}
       </div>
     </div>
   );

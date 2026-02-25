@@ -1,4 +1,14 @@
-export type Tab = "home" | "services" | "bookings" | "tracking" | "account";
+export type Tab =
+  | "dashboard"
+  | "services"
+  | "orders"
+  | "earnings"
+  | "profile"
+  | "availability"
+  | "home"
+  | "bookings"
+  | "tracking"
+  | "account";
 
 export type Category = {
   id: string;

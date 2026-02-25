@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 interface OTPInputProps {
   value: string;
   onChange: (value: string) => void;
+  onEnter?: () => void;
   length?: number;
   className?: string;
 }
@@ -11,10 +12,16 @@ interface OTPInputProps {
 export function OTPInput({
   value,
   onChange,
+  onEnter,
   length = 6,
   className,
 }: OTPInputProps) {
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+
+  React.useEffect(() => {
+    // Focus the first input on mount
+    inputRefs.current[0]?.focus();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const val = e.target.value;
@@ -35,6 +42,8 @@ export function OTPInput({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !value[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
+    } else if (e.key === "Enter" && onEnter && value.length === length) {
+      onEnter();
     }
   };
 
@@ -64,15 +73,15 @@ export function OTPInput({
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
           onPaste={handlePaste}
-          className="w-11 h-12 text-center text-lg font-bold rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-[#FF9933]/45 focus:border-[#FF9933]/50 focus:bg-white transition-all"
+          className="w-12 h-14 text-center text-xl font-bold rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-[#FF9933]/45 focus:border-[#FF9933]/50 focus:bg-white transition-all shadow-sm"
         />
       );
 
-      // Add a divider/gap after the 3rd box if length is 6
+      // Add a small gap after the 3rd box if length is 6
       if (length === 6 && i === 2) {
         inputs.push(
           <div key="divider" className="flex items-center justify-center">
-            <div className="w-2 h-0.5 bg-slate-300 rounded-full" />
+            <div className="w-3 h-0.5 bg-slate-300 rounded-full" />
           </div>
         );
       }
@@ -81,7 +90,7 @@ export function OTPInput({
   };
 
   return (
-    <div className={cn("flex justify-between items-center gap-1.5", className)}>
+    <div className={cn("flex justify-center items-center gap-1.5 px-2", className)}>
       {renderInputs()}
     </div>
   );
