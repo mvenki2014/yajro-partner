@@ -1,9 +1,9 @@
-import { Variants } from "framer-motion";
+import { Variants, Transition } from "framer-motion";
 
 /**
  * Common transitions for consistent feel
  */
-export const transitions = {
+export const transitions: Record<string, Transition> = {
   default: { duration: 0.3, ease: "easeInOut" },
   spring: { type: "spring", stiffness: 300, damping: 30 },
   slow: { duration: 0.5, ease: "easeOut" },

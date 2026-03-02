@@ -1,7 +1,7 @@
 {
   "name": "yajro-priests-partner-app",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.2.0",
   "description": "Yajro Priests - Partner App for priest onboarding, availability, bookings, and earnings management.",
   "type": "module",
   "scripts": {

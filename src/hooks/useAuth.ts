@@ -9,6 +9,8 @@ export interface User {
   email: string;
   mobile: string;
   profile?: string;
+  serviceLocation?: string;
+  experienceYears?: number;
 }
 
 export const AUTH_QUERY_KEY = ['auth-user'];
