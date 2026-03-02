@@ -5,10 +5,12 @@ export function PageHeader({
   title,
   onBack,
   showPremium = true,
+  rightElement,
 }: {
   title: string;
   onBack?: () => void;
   showPremium?: boolean;
+  rightElement?: React.ReactNode;
 }) {
   return (
     <div className="flex w-full items-center gap-2">
@@ -29,7 +31,9 @@ export function PageHeader({
         <div className="truncate font-bold text-base text-slate-900">{title}</div>
       </div>
 
-      {showPremium ? (
+      {rightElement ? (
+        <div className="flex items-center">{rightElement}</div>
+      ) : showPremium ? (
         <span className="inline-flex items-center gap-1 rounded-full transition-colors bg-amber-400/20 text-amber-900 ring-1 ring-amber-400/35 px-2 py-0.5 uppercase tracking-wider text-[9px] font-bold">
           <Crown className="h-2.5 w-2.5 mr-1 inline-block" />
           Premium

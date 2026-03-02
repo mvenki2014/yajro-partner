@@ -22,9 +22,14 @@ import {
 } from "lucide-react";
 import packageJson from "../../package.json";
 import { priestProfile } from "@/data/partner-mock";
+import { useAuth } from "@/hooks/useAuth";
 
 export function PartnerProfile({ onNavigate, onLogout }: { onNavigate: (tab: any) => void; onLogout: () => void }) {
-  const initials = priestProfile.fullName
+  const { user } = useAuth();
+  const displayName = user?.name || priestProfile.fullName;
+  const experienceYears = user?.experienceYears || priestProfile.experienceYears;
+
+  const initials = displayName
     .split(" ")
     .map((part) => part[0])
     .join("")
@@ -124,15 +129,15 @@ export function PartnerProfile({ onNavigate, onLogout }: { onNavigate: (tab: any
           </div>
         </div>
 
-        <h1 className="mt-4 text-2xl font-bold text-[#7A3512] text-center">{priestProfile.fullName}</h1>
-        <p className="text-[#A45A31] text-text-secondary text-sm font-medium">Priest since {new Date().getFullYear() - priestProfile.experienceYears}</p>
+        <h1 className="mt-4 text-2xl font-bold text-[#7A3512] text-center">{displayName}</h1>
+        <p className="text-[#A45A31] text-text-secondary text-sm font-medium">Priest since {new Date().getFullYear() - experienceYears}</p>
 
         <div className="mt-3 flex items-center gap-2">
           <Badge variant="gold" className="px-4 py-1 text-xs">
             ★ {priestProfile.rating} Rating
           </Badge>
           <Badge variant="saffron" className="px-4 py-1 text-xs">
-            {priestProfile.experienceYears} Years Exp
+            {experienceYears} Years Exp
           </Badge>
         </div>
       </div>

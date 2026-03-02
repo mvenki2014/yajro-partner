@@ -3,9 +3,10 @@ import { AppRoutes } from "@/routes/AppRoutes";
 import { StatusBar } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 import { useAndroidBackHandler } from "@/hooks/useAndroidBackHandler";
+import { useAuth } from "@/hooks/useAuth";
 
 export function App() {
-  const [user, setUser] = React.useState<{ name: string; profile: string; email: string; mobile?: string } | null>(null);
+  const { user, isLoading } = useAuth();
 
   // Handle Android hardware back button
   useAndroidBackHandler();
@@ -16,7 +17,15 @@ export function App() {
     }
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#FF9933] border-t-transparent"></div>
+      </div>
+    );
+  }
+
   return (
-    <AppRoutes user={user} setUser={setUser} />
+    <AppRoutes user={user || null} />
   );
 }

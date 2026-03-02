@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.yajro.app',
-  appName: 'Yajro',
+  appId: 'com.yajro.partner',
+  appName: 'Yajro Partner',
   webDir: 'dist',
   // bundledWebRuntime: false,
   // server: {

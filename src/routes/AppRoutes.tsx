@@ -2,14 +2,14 @@ import * as React from "react";
 import { Routes, Route, useNavigate, useParams, useSearchParams, Navigate } from "react-router-dom";
 import { ShellProvider } from "@/context/ShellContext";
 import { MobileShell } from "@/components/layout/MobileShell";
-import { routesConfig } from "./config";
+import { routesConfig, RouteConfig } from "./config";
+import { User } from "@/hooks/useAuth";
 
 interface AppRoutesProps {
-  user: any;
-  setUser: (user: any) => void;
+  user: User | null;
 }
 
-export function AppRoutes({ user, setUser }: AppRoutesProps) {
+export function AppRoutes({ user }: AppRoutesProps) {
   const navigate = useNavigate();
 
   const handleNavigation = (page: string) => {
@@ -44,6 +44,13 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
     return <>{children}</>;
   };
 
+  const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+    if (user) {
+      return <Navigate to="/" replace />;
+    }
+    return <>{children}</>;
+  };
+
   return (
     <ShellProvider>
       <MobileShell>
@@ -53,7 +60,6 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
               <RouteWrapper
                 route={route}
                 user={user}
-                setUser={setUser}
                 handleNavigation={handleNavigation}
               />
             );
@@ -62,7 +68,13 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
               <Route
                 key={route.path}
                 path={route.path}
-                element={route.protected ? <ProtectedRoute>{RouteElement}</ProtectedRoute> : RouteElement}
+                element={
+                  route.protected ? (
+                    <ProtectedRoute>{RouteElement}</ProtectedRoute>
+                  ) : (
+                    <PublicRoute>{RouteElement}</PublicRoute>
+                  )
+                }
               />
             );
           })}
@@ -73,7 +85,13 @@ export function AppRoutes({ user, setUser }: AppRoutesProps) {
   );
 }
 
-function RouteWrapper({ route, user, setUser, handleNavigation }: any) {
+interface RouteWrapperProps {
+  route: RouteConfig;
+  user: User | null;
+  handleNavigation: (page: string) => void;
+}
+
+function RouteWrapper({ route, user, handleNavigation }: RouteWrapperProps) {
   const params = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -81,7 +99,6 @@ function RouteWrapper({ route, user, setUser, handleNavigation }: any) {
   const props = route.props
     ? route.props(params, searchParams, navigate, {
         user,
-        setUser,
         handleNavigation,
       })
     : {};

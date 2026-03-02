@@ -11,6 +11,12 @@ export type PriestProfile = {
   verified: boolean;
 };
 
+export type ServicePackage = {
+  name: "Basic" | "Standard" | "Premium";
+  price: number;
+  description: string;
+};
+
 export type PartnerService = {
   id: string;
   name: string;
@@ -22,6 +28,7 @@ export type PartnerService = {
   visitType: "Home Visit" | "Temple Visit" | "Both";
   requiredItems: string[];
   enabled: boolean;
+  packages?: ServicePackage[];
 };
 
 export type PartnerBookingStatus =
@@ -67,6 +74,11 @@ export const partnerServices: PartnerService[] = [
     visitType: "Home Visit",
     requiredItems: ["Kalash", "Coconut", "Flowers", "Prasadam items"],
     enabled: true,
+    packages: [
+      { name: "Basic", price: 3500, description: "Standard pooja with essential rituals" },
+      { name: "Standard", price: 5000, description: "Comprehensive pooja with additional offerings" },
+      { name: "Premium", price: 7500, description: "Grand ritual with extended duration and special materials" }
+    ]
   },
   {
     id: "svc-2",

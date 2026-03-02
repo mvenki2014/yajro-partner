@@ -64,7 +64,9 @@ export function OTPInput({
       inputs.push(
         <input
           key={i}
-          ref={(el) => (inputRefs.current[i] = el)}
+          ref={(el) => {
+            inputRefs.current[i] = el;
+          }}
           type="text"
           inputMode="numeric"
           pattern="\d*"
@@ -73,15 +75,15 @@ export function OTPInput({
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
           onPaste={handlePaste}
-          className="w-12 h-14 text-center text-xl font-bold rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-[#FF9933]/45 focus:border-[#FF9933]/50 focus:bg-white transition-all shadow-sm"
+          className="w-10 h-12 text-center text-xl font-bold rounded-xl border border-slate-200 bg-white/50 backdrop-blur-sm outline-none focus:ring-2 focus:ring-orange-200/50 focus:border-orange-400 focus:bg-white transition-all shadow-sm"
         />
       );
 
-      // Add a small gap after the 3rd box if length is 6
+      // Add a separator dot after the 3rd box if length is 6
       if (length === 6 && i === 2) {
         inputs.push(
-          <div key="divider" className="flex items-center justify-center">
-            <div className="w-3 h-0.5 bg-slate-300 rounded-full" />
+          <div key="divider" className="flex items-center justify-center mx-0.5">
+            <div className="w-2.5 h-0.5 bg-slate-400/40 rounded-xl" />
           </div>
         );
       }
@@ -90,7 +92,7 @@ export function OTPInput({
   };
 
   return (
-    <div className={cn("flex justify-center items-center gap-1.5 px-2", className)}>
+    <div className={cn("flex justify-center items-center gap-2", className)}>
       {renderInputs()}
     </div>
   );

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export interface LocationData {
   address: string;
   city?: string;
@@ -10,12 +12,28 @@ export interface LocationData {
   slot?: string;
 }
 
+/**
+ * Fetch public IP address using ipify
+ */
+export const getIPAddress = async (): Promise<string | null> => {
+  try {
+    const { data } = await axios.get("https://api.ipify.org?format=json", { timeout: 5000 });
+    return data.ip;
+  } catch (error) {
+    console.error("Error fetching IP address:", error);
+    return null;
+  }
+};
+
+/**
+ * Fetch location details by IP using ip-api.com
+ */
 export const getIPLocation = async (ip?: string): Promise<LocationData | null> => {
   try {
-    // Use ip-api.com as requested
-    const url = ip ? `http://ip-api.com/json/${ip}` : "http://ip-api.com/json/";
-    const response = await fetch(url);
-    const data = await response.json();
+    const targetIp = ip || (await getIPAddress()) || "";
+    const url = targetIp ? `https://ip-api.com/json/${targetIp}` : "https://ip-api.com/json/";
+    
+    const { data } = await axios.get(url, { timeout: 5000 });
     
     if (data.status === "success") {
       return {
@@ -31,12 +49,18 @@ export const getIPLocation = async (ip?: string): Promise<LocationData | null> =
   }
 };
 
+/**
+ * Reverse geocode coordinates using OpenStreetMap Nominatim
+ */
 export const reverseGeocode = async (latitude: number, longitude: number): Promise<LocationData | null> => {
   try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+    const { data } = await axios.get(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+      { 
+        timeout: 5000,
+        headers: { "Accept-Language": "en" }
+      }
     );
-    const data = await response.json();
     
     if (data.address) {
       const city = data.address.city || data.address.town || data.address.village || "";
@@ -66,6 +90,9 @@ export const reverseGeocode = async (latitude: number, longitude: number): Promi
   }
 };
 
+/**
+ * Get current GPS position
+ */
 export const getCurrentLocation = (): Promise<GeolocationPosition> => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {

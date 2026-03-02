@@ -9,17 +9,17 @@ export interface InputProps
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, icon, ...props }, ref) => {
     return (
-      <div className="relative">
+      <div className="relative group">
         {icon && (
-          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#FF9933] transition-colors">
             {icon}
           </div>
         )}
         <input
           type={type}
           className={cn(
-            "mt-1 flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9933]/45 focus-visible:border-[#FF9933]/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
-            icon && "pl-10",
+            "flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9933]/45 focus-visible:border-[#FF9933]/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
+            icon && "pl-11",
             className
           )}
           ref={ref}

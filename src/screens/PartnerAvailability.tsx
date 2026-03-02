@@ -3,7 +3,7 @@ import { useSetShell } from "@/context/ShellContext";
 import { Button } from "@/components/ui/Button";
 import { Switch } from "@/components/ui/Switch";
 import { Badge } from "@/components/ui/Badge";
-import { cn } from "@/lib/utils";
+import { cn, toISO, formatShortOrdinalDate } from "@/lib/utils";
 import { fetchTimeSlots, Slot } from "@/lib/api";
 
 const STORAGE_KEY = "partner-availability-config";
@@ -14,33 +14,6 @@ type AvailabilityConfig = {
   unavailableSlotsByDate: Record<string, string[]>;
 };
 
-function toISO(d: Date) {
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-function formatShortOrdinalDate(iso: string) {
-  const parsed = new Date(`${iso}T00:00:00`);
-  if (Number.isNaN(parsed.getTime())) return iso;
-
-  const day = parsed.getDate();
-  const month = parsed.toLocaleDateString(undefined, { month: "short" });
-
-  const mod10 = day % 10;
-  const mod100 = day % 100;
-  const suffix =
-    mod10 === 1 && mod100 !== 11
-      ? "st"
-      : mod10 === 2 && mod100 !== 12
-        ? "nd"
-        : mod10 === 3 && mod100 !== 13
-          ? "rd"
-          : "th";
-
-  return `${day}${suffix} ${month}`;
-}
 
 function loadStoredConfig(): Partial<AvailabilityConfig & { dateSlots?: Record<string, string[]> }> {
   try {

@@ -7,6 +7,8 @@
     { "id": "special", "name": "Special", "icon": "/images/fire-pit.gif" },
     { "id": "business", "name": "Business", "icon": "/images/work.gif" }
   ],
+  "serviceLocations": ["vishakapatnam", "hyderabad", "banglour"],
+  "registrationLanguages": ["Telugu", "Hindi", "English", "Tamil", "Kannada", "Sanskrit"],
   "services": [
     {
       "id": "satyanarayana-vratam",
