@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { DeleteServiceConfirmDialog } from "@/modules/services/DeleteServiceConfirmDialog";
 import { partnerServices } from "@/data/partner-mock";
 import { StatusToggle } from "@/modules/dashboard/StatusToggle";
 import {
@@ -64,6 +65,7 @@ export function PartnerServiceDetails({
     [serviceId]
   );
   const [enabled, setEnabled] = React.useState(service?.enabled ?? false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (!service) {
@@ -286,13 +288,7 @@ export function PartnerServiceDetails({
           <Button
             variant="secondary"
             className="h-12 flex-1 rounded-xl border-1 border-red-90 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-100 font-bold transition-all active:scale-[0.98]"
-            onClick={() => {
-              const index = partnerServices.findIndex((item) => item.id === service.id);
-              if (index !== -1) {
-                partnerServices.splice(index, 1);
-              }
-              navigate("/services");
-            }}
+            onClick={() => setIsDeleteDialogOpen(true)}
           >
             <HiOutlineTrash className="h-5 w-5" />
             Delete
@@ -307,6 +303,19 @@ export function PartnerServiceDetails({
           </Button>
         </div>
       </div>
+
+      <DeleteServiceConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        serviceName={service.name}
+        onConfirm={() => {
+          const index = partnerServices.findIndex((item) => item.id === service.id);
+          if (index !== -1) {
+            partnerServices.splice(index, 1);
+          }
+          navigate("/services");
+        }}
+      />
     </motion.div>
   );
 }

@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/Button";
 import { partnerServices, type PartnerService } from "@/data/partner-mock";
 import { PartnerServiceCard } from "./PartnerServiceCard";
 import { ServiceFilters } from "./ServiceFilters";
+import { DeleteServiceConfirmDialog } from "./DeleteServiceConfirmDialog";
 import { Plus } from "lucide-react";
 import { HiChevronLeft } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
 export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const [services, setServices] = React.useState(partnerServices);
+  const [serviceToDelete, setServiceToDelete] = React.useState<PartnerService | null>(null);
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isScrolled, setIsScrolled] = React.useState(false);
@@ -141,7 +143,10 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
               service={service}
               onToggle={toggleService}
               onEdit={(serviceToEdit) => navigate(`/services/form/${serviceToEdit.id}`)}
-              onDelete={deleteService}
+              onDelete={(id) => {
+                const selected = services.find((item) => item.id === id) || null;
+                setServiceToDelete(selected);
+              }}
               onOpenDetails={openDetails}
             />
           ))}
@@ -185,6 +190,21 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
           )}
         </div>
       </div>
+
+      <DeleteServiceConfirmDialog
+        open={Boolean(serviceToDelete)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setServiceToDelete(null);
+          }
+        }}
+        serviceName={serviceToDelete?.name}
+        onConfirm={() => {
+          if (serviceToDelete) {
+            deleteService(serviceToDelete.id);
+          }
+        }}
+      />
     </div>
   );
 }
