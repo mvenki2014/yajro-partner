@@ -1,5 +1,4 @@
-import * as React from "react";
-import { HiOutlineClock, HiOutlineUser, HiOutlinePhone, HiPhone, HiOutlineMapPin, HiMapPin } from "react-icons/hi2";
+import { HiOutlineClock, HiOutlineUser, HiPhone, HiOutlineMapPin, HiMapPin } from "react-icons/hi2";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 

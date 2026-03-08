@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PageHeader } from "@/components/layout/PageHeader";

@@ -1,5 +1,3 @@
-import * as React from "react";
-
 interface ServiceFiltersProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;

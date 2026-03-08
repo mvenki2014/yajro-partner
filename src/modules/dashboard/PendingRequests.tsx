@@ -1,7 +1,5 @@
-import * as React from "react";
 import { HiOutlineMapPin, HiOutlineClock, HiOutlineChevronRight } from "react-icons/hi2";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 
 interface BookingRequest {
   id: string;

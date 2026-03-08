@@ -11,12 +11,10 @@ export const serviceSchema = z.object({
     .min(1, "Service name is required")
     .regex(/^[a-zA-Z\s]+$/, "Service name must contain only letters"),
   category: z.string().min(1, "Category is required"),
-  description: z.string()
-    .min(1, "Description is required")
-    .refine((val) => {
-      const words = val.trim().split(/\s+/).filter(Boolean);
-      return words.length >= 2 && words.length <= 3;
-    }, "Description must be 2 to 3 words"),
+  description: z.string().refine((val) => {
+    const words = val.trim().split(/\s+/).filter(Boolean);
+    return words.length >= 2;
+  }, "Description must be at least 2 words"),
   duration: z.string().min(1, "Duration is required").refine((val) => {
     const match = val.match(/(\d+)h\s*(\d+)m/);
     if (!match) return false;
@@ -29,6 +27,7 @@ export const serviceSchema = z.object({
   visitType: z.enum(["Home Visit", "Temple Visit", "Both"]),
   requiredItems: z.array(z.string()).default([]),
   enabled: z.boolean().default(true),
+  image: z.string().optional(),
   packages: z.array(servicePackageSchema).optional(),
 });
 
@@ -39,6 +38,7 @@ export const step1Schema = serviceSchema.pick({
   duration: true,
   visitType: true,
   customPrice: true,
+  image: true,
 });
 
 export const step2Schema = z.object({

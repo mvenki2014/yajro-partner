@@ -28,6 +28,7 @@ export type PartnerService = {
   visitType: "Home Visit" | "Temple Visit" | "Both";
   requiredItems: string[];
   enabled: boolean;
+  image?: string;
   packages?: ServicePackage[];
 };
 

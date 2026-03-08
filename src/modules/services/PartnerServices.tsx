@@ -1,15 +1,14 @@
 import * as React from "react";
 import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { partnerServices, type PartnerService } from "@/data/partner-mock";
 import { AddServiceStepForm } from "./AddServiceStepForm";
 import { PartnerServiceCard } from "./PartnerServiceCard";
 import { ServiceFilters } from "./ServiceFilters";
 import { Plus } from "lucide-react";
 import { HiChevronLeft } from "react-icons/hi";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const [services, setServices] = React.useState(partnerServices);
@@ -19,6 +18,8 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isScrolled, setIsScrolled] = React.useState(false);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
     const container = scrollContainerRef.current;
@@ -54,6 +55,31 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
     return list;
   }, [services, selectedCategory, searchQuery]);
 
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const deleteId = params.get("delete");
+    const editId = params.get("edit");
+
+    if (deleteId) {
+      setServices((prev) => prev.filter((item) => item.id !== deleteId));
+      if (editingService?.id === deleteId) {
+        setEditingService(null);
+        setShowAddForm(false);
+      }
+      navigate("/services", { replace: true });
+      return;
+    }
+
+    if (editId) {
+      const serviceToEdit = services.find((item) => item.id === editId);
+      if (serviceToEdit) {
+        setEditingService(serviceToEdit);
+        setShowAddForm(true);
+      }
+      navigate("/services", { replace: true });
+    }
+  }, [location.search, navigate, services, editingService]);
+
   useSetShell({
     title: (
       <div className="flex w-full items-center gap-2">
@@ -69,12 +95,12 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
           <div className="truncate font-semibold text-slate-900">My Services</div>
           <div className="text-xs text-slate-500 truncate">Manage your offerings</div>
         </div>
-        <Button 
-          size="sm" 
+        <Button
+          size="sm"
           className="rounded-full px-4 shadow-md shadow-orange-200"
           onClick={() => setShowAddForm(true)}
         >
-          <Plus className="w-4 h-4 mr-1" />
+          <Plus className="w-4 h-4 mr-1 font-bold" />
           Add New
         </Button>
       </div>
@@ -90,12 +116,15 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
     }
     setShowAddForm(false);
     setEditingService(null);
+    navigate("/services", { replace: true });
   };
 
   const startEdit = (service: PartnerService) => {
     setEditingService(service);
     setShowAddForm(true);
   };
+
+  const openDetails = (service: PartnerService) => navigate(`/services/${service.id}`);
 
   const toggleService = (id: string, enabled: boolean) => {
     setServices((prev) => prev.map((item) => (item.id === id ? { ...item, enabled } : item)));
@@ -137,10 +166,10 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
       >
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Your Offerings</h2>
-            <Badge variant="default" className="bg-[#FF9933]/10 text-[#B35300] border-none px-2 rounded-lg font-bold">
+            <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Your Offerings</h2>
+            <div className="h-5 px-2 flex items-center justify-center bg-orange-50 text-[#FF9933] border border-orange-100 rounded-lg text-[10px] font-black tracking-tight">
               {filteredServices.length}
-            </Badge>
+            </div>
           </div>
           {filteredServices.length < services.length && (
             <button 
@@ -155,7 +184,7 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
           )}
         </div>
 
-        <div className="grid gap-1 pb-24">
+        <div className="grid gap-2 pb-12">
           {filteredServices.map((service) => (
             <PartnerServiceCard
               key={service.id}
@@ -163,6 +192,7 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
               onToggle={toggleService}
               onEdit={startEdit}
               onDelete={deleteService}
+              onOpenDetails={openDetails}
             />
           ))}
 

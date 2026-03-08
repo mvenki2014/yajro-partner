@@ -41,3 +41,22 @@ export function formatShortOrdinalDate(iso: string): string {
 
   return `${day}${suffix} ${month}`;
 }
+
+/**
+ * Handle key down for tag input (Enter, Comma, Space)
+ */
+export const handleTagKeyDown = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  tagInput: string,
+  addTag: (tag: string) => void
+) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    addTag(tagInput);
+  } else if (e.key === "," || e.key === " ") {
+    if (tagInput.trim()) {
+      e.preventDefault();
+      addTag(tagInput);
+    }
+  }
+};

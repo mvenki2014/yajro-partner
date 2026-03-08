@@ -1,133 +1,153 @@
-import * as React from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { Switch } from "@/components/ui/Switch";
 import { PartnerService } from "@/data/partner-mock";
-import { HiOutlineClock, HiOutlineMapPin, HiOutlineCurrencyRupee, HiOutlinePencilSquare, HiOutlineTrash } from "react-icons/hi2";
+import { HiOutlinePencilSquare, HiOutlineTrash, HiOutlineCurrencyRupee, HiOutlineClock, HiOutlineMapPin } from "react-icons/hi2";
+import { cn } from "@/lib/utils";
 
 interface PartnerServiceCardProps {
   service: PartnerService;
   onToggle: (id: string, enabled: boolean) => void;
   onEdit: (service: PartnerService) => void;
   onDelete: (id: string) => void;
+  onOpenDetails: (service: PartnerService) => void;
 }
 
-export function PartnerServiceCard({ service, onToggle, onEdit, onDelete }: PartnerServiceCardProps) {
+export function PartnerServiceCard({
+  service,
+  onToggle,
+  onEdit,
+  onDelete,
+  onOpenDetails,
+}: PartnerServiceCardProps) {
+  const serviceImage = service.image || "/images/dummy-pooja-service.png";
+  const minPrice = service.packages?.length ? Math.min(...service.packages.map((pkg) => pkg.price)) : service.basePrice;
+
   return (
-    <Card className="mb-4 relative overflow-hidden p-3.5 pt-3 bg-gradient-to-br from-white to-[#FFF9F2] border-slate-200/60 shadow-md shadow-slate-300/30 rounded-2xl hover:shadow-lg transition-shadow">
-      <div className="pointer-events-none absolute -right-10 -bottom-10 h-44 w-44 rounded-full bg-[#FF9933]/5 blur-2xl" />
+    <Card
+      className="mb-1 relative overflow-hidden p-3.5 bg-gradient-to-br from-white to-[#FFF9F2] border-slate-200/60 shadow-md shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group"
+      onClick={() => onOpenDetails(service)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOpenDetails(service);
+        }
+      }}
+    >
+      <div className="pointer-events-none absolute -right-10 -bottom-10 h-44 w-44 rounded-full bg-[#FF9933]/5 blur-2xl group-hover:bg-[#FF9933]/10 transition-colors" />
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-bold text-slate-900">{service.name}</h3>
-              <Badge variant={service.enabled ? "default" : "neutral"} className="text-[9px] px-1.5 py-0">
-                {service.enabled ? "Active" : "Inactive"}
-              </Badge>
-            </div>
-            <p className="text-xs font-medium text-[#B35300] bg-orange-50 w-fit px-2 py-0.5 rounded-md">
-              {service.category}
-            </p>
+        <div className="flex items-start gap-3.5">
+          <div className="w-16 h-16 rounded-xl overflow-hidden shadow-sm flex-shrink-0 bg-white group-hover:shadow-md transition-shadow">
+            <img
+              src={serviceImage}
+              alt={service.name}
+              className="w-full h-full object-cover p-1 transition-transform group-hover:scale-105 duration-500"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/images/dummy-pooja-service.png";
+              }}
+            />
           </div>
-          <Switch
-            checked={service.enabled}
-            onCheckedChange={(value) => onToggle(service.id, value)}
-          />
-        </div>
-
-        <p className="text-sm text-slate-600 line-clamp-2 mb-4 leading-relaxed">
-          {service.description}
-        </p>
-
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="flex items-center text-[13px] text-slate-600 font-medium">
-            <div className="h-6.5 w-6.5 rounded-lg bg-orange-50 flex items-center justify-center mr-2.5 shadow-sm">
-              <HiOutlineClock className="h-3.5 w-3.5 text-orange-500" />
-            </div>
-            <span>{service.duration}</span>
-          </div>
-          <div className="flex items-center text-[13px] text-slate-600 font-medium">
-            <div className="h-6.5 w-6.5 rounded-lg bg-orange-50 flex items-center justify-center mr-2.5 shadow-sm">
-              <HiOutlineMapPin className="h-3.5 w-3.5 text-orange-500" />
-            </div>
-            <span className="line-clamp-1">{service.visitType}</span>
-          </div>
-          <div className="flex items-center text-[13px] text-slate-600 font-medium col-span-2">
-            <div className="h-6.5 w-6.5 rounded-lg bg-orange-50 flex items-center justify-center mr-2.5 shadow-sm">
-              <HiOutlineCurrencyRupee className="h-3.5 w-3.5 text-orange-500" />
-            </div>
-            <span>
-              {service.packages && service.packages.length > 0 
-                ? `Starts from ₹${Math.min(...service.packages.map(p => p.price))}`
-                : `₹${service.basePrice}`}
-            </span>
-          </div>
-        </div>
-
-        {service.packages && service.packages.length > 0 && (
-          <div className="mb-4 space-y-2">
-            <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Available Packages</p>
-            <div className="grid grid-cols-3 gap-2">
-              {service.packages.map((pkg) => {
-                const bgColors = {
-                  Basic: "bg-[#F8EFE6] border-[#E2C7AF] shadow-sm shadow-orange-200/40",
-                  Standard: "bg-[#EEF6F0] border-[#BFE3CC] shadow-sm shadow-green-200/40",
-                  Premium: "bg-[#F7ECEF] border-[#E3B8C2] shadow-sm shadow-rose-200/40",
-                };
-                const textColors = {
-                  Basic: { title: "text-[#9A3412]", price: "text-slate-700" },
-                  Standard: { title: "text-[#166534]", price: "text-slate-700" },
-                  Premium: { title: "text-[#9F1239]", price: "text-slate-700" },
-                };
-                const colorClass = bgColors[pkg.name as keyof typeof bgColors] || "bg-slate-50 border-slate-100";
-                const textColor = textColors[pkg.name as keyof typeof textColors] || { title: "text-slate-400", price: "text-slate-700" };
-
-                return (
-                  <div key={pkg.name} className={`${colorClass} rounded-xl p-2.5 border relative overflow-hidden transition-all hover:scale-[1.02]`}>
-                     <div className={`pointer-events-none absolute -right-3 -bottom-3 h-14 w-14 rounded-full opacity-30 blur-xl ${
-                       pkg.name === 'Basic' ? 'bg-[#E7B98A]' : 
-                       pkg.name === 'Standard' ? 'bg-[#86D19E]' : 
-                       pkg.name === 'Premium' ? 'bg-[#F2A7B5]' : 'bg-slate-400'
-                     }`} />
-                    <div className="relative z-10">
-                      <p className={`text-[10px] font-extrabold uppercase tracking-wider mb-0.5 ${textColor.title}`}>{pkg.name}</p>
-                      <p className={`text-sm font-bold tracking-tight text-slate-900`}>₹{pkg.price}</p>
-                    </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <h3 className="text-base font-bold text-slate-900 truncate tracking-tight">{service.name}</h3>
+              </div>
+              <div onClick={(e) => e.stopPropagation()} className="flex items-center scale-90 origin-right">
+                <button 
+                  onClick={() => onToggle(service.id, !service.enabled)}
+                  className={cn(
+                    "flex min-w-[84px] items-center justify-center gap-2 rounded-full border px-3 py-1.5 transition-all duration-300 active:scale-95",
+                    service.enabled 
+                      ? "bg-emerald-50 text-emerald-600 border-emerald-200 shadow-sm" 
+                      : "bg-red-100 text-red-600 border-red-200 shadow-inner opacity-90"
+                  )}
+                >
+                  <div className="relative flex h-1.5 w-1.5">
+                    {service.enabled && (
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+                    )}
+                    <div className={cn(
+                      "relative h-1.5 w-1.5 rounded-full transition-colors duration-500",
+                      service.enabled ? "bg-emerald-500" : "bg-red-600"
+                    )} />
                   </div>
-                );
-              })}
+                  <span className="text-[9px] font-black uppercase tracking-widest">
+                    {service.enabled ? "Active" : "Paused"}
+                  </span>
+                </button>
+              </div>
+            </div>
+            
+            <div className="mt-1 flex items-center gap-2">
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+                {service.category}
+              </p>
+              {!service.enabled && (
+                <Badge variant="neutral" className="text-[8px] px-1.5 py-0 rounded-md">Disabled</Badge>
+              )}
+            </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="rounded-xl bg-white/60 p-2 ring-1 ring-slate-100/50 shadow-sm">
+                <div className="flex items-center gap-1 mb-0.5">
+                  <div className="h-4 w-4 rounded-md bg-orange-50 flex items-center justify-center">
+                    <HiOutlineCurrencyRupee className="h-2.5 w-2.5 text-orange-500" />
+                  </div>
+                  <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Price</p>
+                </div>
+                <p className="text-[11px] font-extrabold text-slate-800">₹{minPrice.toLocaleString("en-IN")}</p>
+              </div>
+              <div className="rounded-xl bg-white/60 p-2 ring-1 ring-slate-100/50 shadow-sm">
+                <div className="flex items-center gap-1 mb-0.5">
+                  <div className="h-4 w-4 rounded-md bg-orange-50 flex items-center justify-center">
+                    <HiOutlineClock className="h-2.5 w-2.5 text-orange-500" />
+                  </div>
+                  <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Time</p>
+                </div>
+                <p className="text-[11px] font-extrabold text-slate-800 truncate">{service.duration}</p>
+              </div>
+              <div className="rounded-xl bg-white/60 p-2 ring-1 ring-slate-100/50 shadow-sm">
+                <div className="flex items-center gap-1 mb-0.5">
+                  <div className="h-4 w-4 rounded-md bg-orange-50 flex items-center justify-center">
+                    <HiOutlineMapPin className="h-2.5 w-2.5 text-orange-500" />
+                  </div>
+                  <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Type</p>
+                </div>
+                <p className="text-[11px] font-extrabold text-slate-800 truncate">{service.visitType}</p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-          <div className="flex gap-1.5">
+        <div className="mt-4 flex items-center justify-between pt-3 border-t border-slate-100/60">
+          <div className="flex items-center gap-1.5">
             {service.customPrice && (
-              <Badge variant="gold" className="rounded-lg">Custom Price</Badge>
+              <Badge variant="gold" className="text-[9px] px-2 py-0.5 rounded-lg shadow-sm">Premium</Badge>
             )}
             {service.requiredItems.length > 0 && (
-              <Badge variant="outline" className="rounded-lg">
-                {service.requiredItems.length} Items
+              <Badge variant="secondary" className="text-[9px] px-2 py-0.5 rounded-lg shadow-sm border-none">
+                {service.requiredItems.length} Essentials
               </Badge>
             )}
           </div>
-          <div className="flex gap-2">
-            <Button 
-              variant="secondary" 
-              size="icon-sm" 
-              className="rounded-full"
+          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="rounded-full h-8 w-8 text-[#FF9933] border-orange-100 bg-white shadow-sm hover:bg-orange-50"
               onClick={() => onEdit(service)}
             >
-              <HiOutlinePencilSquare className="w-3.5 h-3.5 text-slate-600" />
+              <HiOutlinePencilSquare className="w-4 h-4" />
             </Button>
-            <Button 
-              variant="secondary" 
-              size="icon-sm" 
-              className="rounded-full hover:bg-red-50 hover:ring-red-100"
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="rounded-full h-8 w-8 text-red-500 border-red-500/10 bg-white shadow-sm hover:bg-red-50 hover:border-red-500/20"
               onClick={() => onDelete(service.id)}
             >
-              <HiOutlineTrash className="w-3.5 h-3.5 text-red-500" />
+              <HiOutlineTrash className="w-4 h-4" />
             </Button>
           </div>
         </div>

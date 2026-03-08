@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Bell, Calendar, CheckCircle2, Info } from "lucide-react";
 import {
   Dialog,

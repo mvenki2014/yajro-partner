@@ -19,9 +19,9 @@ export function MobileShell({
   const footer = footerProp !== undefined ? footerProp : contextFooter;
   const bottomNav = bottomNavProp !== undefined ? bottomNavProp : contextBottomNav;
   return (
-    <div className={cn("app-container flex flex-col h-full bg-[#fff8ee] text-slate-900", !title && "bg-[#fff8ee7d]")}>
+    <div className={cn("app-container flex flex-col h-full bg-[#fffdfb] text-slate-900", !title && "bg-[#fff8ee7d]")}>
       <div className={cn(
-        "mx-auto w-full max-w-[420px] flex-1 flex flex-col relative shadow-2xl shadow-slate-900/5 sm:border-x border-slate-200/50 overflow-hidden",
+        "mx-auto w-full max-w-[460px] flex-1 flex flex-col relative shadow-2xl shadow-slate-900/5 sm:border-x border-slate-200/50 overflow-hidden",
         !title && "bg-transparent shadow-none border-none"
       )}>
 

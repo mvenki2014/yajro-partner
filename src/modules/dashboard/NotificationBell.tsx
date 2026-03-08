@@ -1,4 +1,3 @@
-import * as React from "react";
 import { HiOutlineBell } from "react-icons/hi2";
 
 interface NotificationBellProps {

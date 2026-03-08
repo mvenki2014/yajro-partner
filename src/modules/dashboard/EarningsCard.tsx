@@ -1,4 +1,3 @@
-import * as React from "react";
 import { HiArrowTrendingUp, HiOutlineBanknotes } from "react-icons/hi2";
 import { Card } from "@/components/ui/Card";
 
