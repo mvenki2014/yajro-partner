@@ -111,7 +111,7 @@ export function PartnerServiceDetails({
     <motion.div 
       initial="hidden"
       animate="visible"
-      className="space-y-3 pb-18 p-3 pt-0"
+      className="space-y-3 pb-18"
     >
       {/* Hero Header Card */}
       <motion.div variants={FADE_UP_VARIANTS} transition={{ duration: 0.5 }}>

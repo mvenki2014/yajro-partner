@@ -26,7 +26,7 @@ export function PartnerServiceCard({
   return (
     <Card
       className={cn(
-        "mb-1 relative overflow-hidden p-3.5 border-slate-200/60 shadow-xl shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group",
+        "mb-1 relative overflow-hidden p-3 border-slate-200/60 shadow-xl shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group",
         service.enabled
           ? "bg-gradient-to-br from-white to-[#FFF9F2]"
           : "bg-gradient-to-br from-slate-100 to-slate-200/80 border-slate-300/70 grayscale-[0.2] opacity-90"
@@ -136,7 +136,7 @@ export function PartnerServiceCard({
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between pt-3 border-t border-slate-100/60">
+        <div className="mt-2 flex items-center justify-between pt-1.5 border-t border-slate-100/60">
           <div className="flex items-center gap-1.5">
             {service.customPrice && (
               <Badge variant="gold" className="text-[9px] px-2 py-0.5 rounded-lg shadow-sm">Premium</Badge>
