@@ -3,23 +3,19 @@ import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/Button";
 import { partnerServices, type PartnerService } from "@/data/partner-mock";
-import { AddServiceStepForm } from "./AddServiceStepForm";
 import { PartnerServiceCard } from "./PartnerServiceCard";
 import { ServiceFilters } from "./ServiceFilters";
 import { Plus } from "lucide-react";
 import { HiChevronLeft } from "react-icons/hi";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const [services, setServices] = React.useState(partnerServices);
-  const [showAddForm, setShowAddForm] = React.useState(false);
-  const [editingService, setEditingService] = React.useState<PartnerService | null>(null);
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isScrolled, setIsScrolled] = React.useState(false);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   React.useEffect(() => {
     const container = scrollContainerRef.current;
@@ -55,31 +51,6 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
     return list;
   }, [services, selectedCategory, searchQuery]);
 
-  React.useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const deleteId = params.get("delete");
-    const editId = params.get("edit");
-
-    if (deleteId) {
-      setServices((prev) => prev.filter((item) => item.id !== deleteId));
-      if (editingService?.id === deleteId) {
-        setEditingService(null);
-        setShowAddForm(false);
-      }
-      navigate("/services", { replace: true });
-      return;
-    }
-
-    if (editId) {
-      const serviceToEdit = services.find((item) => item.id === editId);
-      if (serviceToEdit) {
-        setEditingService(serviceToEdit);
-        setShowAddForm(true);
-      }
-      navigate("/services", { replace: true });
-    }
-  }, [location.search, navigate, services, editingService]);
-
   useSetShell({
     title: (
       <div className="flex w-full items-center gap-2">
@@ -98,54 +69,33 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
         <Button
           size="sm"
           className="rounded-full px-4 shadow-md shadow-orange-200"
-          onClick={() => setShowAddForm(true)}
+          onClick={() => navigate("/services/form")}
         >
           <Plus className="w-4 h-4 mr-1 font-bold" />
           Add New
         </Button>
       </div>
     ),
-    bottomNav: showAddForm ? null : <BottomNav activeTab="services" onTabChange={onNavigate} />,
+    bottomNav: <BottomNav activeTab="services" onTabChange={onNavigate} />,
   });
-
-  const handleSave = (payload: Omit<PartnerService, "id"> & { id?: string }) => {
-    if (payload.id) {
-      setServices((prev) => prev.map((item) => (item.id === payload.id ? (payload as PartnerService) : item)));
-    } else {
-      setServices((prev) => [{ ...payload, id: `svc-${Date.now()}` } as PartnerService, ...prev]);
-    }
-    setShowAddForm(false);
-    setEditingService(null);
-    navigate("/services", { replace: true });
-  };
-
-  const startEdit = (service: PartnerService) => {
-    setEditingService(service);
-    setShowAddForm(true);
-  };
 
   const openDetails = (service: PartnerService) => navigate(`/services/${service.id}`);
 
   const toggleService = (id: string, enabled: boolean) => {
     setServices((prev) => prev.map((item) => (item.id === id ? { ...item, enabled } : item)));
+    const index = partnerServices.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      partnerServices[index] = { ...partnerServices[index], enabled };
+    }
   };
 
   const deleteService = (id: string) => {
     setServices((prev) => prev.filter((item) => item.id !== id));
+    const index = partnerServices.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      partnerServices.splice(index, 1);
+    }
   };
-
-  if (showAddForm) {
-    return (
-      <AddServiceStepForm
-        initialData={editingService}
-        onBack={() => {
-          setShowAddForm(false);
-          setEditingService(null);
-        }}
-        onSave={handleSave}
-      />
-    );
-  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] -mx-4">
@@ -190,7 +140,7 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
               key={service.id}
               service={service}
               onToggle={toggleService}
-              onEdit={startEdit}
+              onEdit={(serviceToEdit) => navigate(`/services/form/${serviceToEdit.id}`)}
               onDelete={deleteService}
               onOpenDetails={openDetails}
             />
@@ -225,7 +175,7 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
                 ) : (
                   <Button 
                     className="rounded-2xl font-bold bg-[#FF9933] hover:bg-[#E68A2E] shadow-lg shadow-orange-100"
-                    onClick={() => setShowAddForm(true)}
+                    onClick={() => navigate("/services/form")}
                   >
                     Add First Service
                   </Button>
