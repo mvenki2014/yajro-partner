@@ -25,7 +25,12 @@ export function PartnerServiceCard({
 
   return (
     <Card
-      className="mb-1 relative overflow-hidden p-3.5 bg-gradient-to-br from-white to-[#FFF9F2] border-slate-200/60 shadow-md shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group"
+      className={cn(
+        "mb-1 relative overflow-hidden p-3.5 border-slate-200/60 shadow-xl shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group",
+        service.enabled
+          ? "bg-gradient-to-br from-white to-[#FFF9F2]"
+          : "bg-gradient-to-br from-slate-100 to-slate-200/80 border-slate-300/70 grayscale-[0.2] opacity-90"
+      )}
       onClick={() => onOpenDetails(service)}
       role="button"
       tabIndex={0}
@@ -36,7 +41,14 @@ export function PartnerServiceCard({
         }
       }}
     >
-      <div className="pointer-events-none absolute -right-10 -bottom-10 h-44 w-44 rounded-full bg-[#FF9933]/5 blur-2xl group-hover:bg-[#FF9933]/10 transition-colors" />
+      {!service.enabled && (
+        <div className="pointer-events-none absolute inset-0 z-20 bg-slate-200/30 backdrop-brightness-95 backdrop-saturate-50" />
+      )}
+      <div
+        className={cn(
+          "pointer-events-none absolute -right-10 -bottom-10 h-44 w-44 rounded-full blur-2xl transition-colors bg-[#FF9933]/5 group-hover:bg-[#FF9933]/10"
+        )}
+      />
       <div className="relative z-10">
         <div className="flex items-start gap-3.5">
           <div className="w-16 h-16 rounded-xl overflow-hidden shadow-sm flex-shrink-0 bg-white group-hover:shadow-md transition-shadow">
@@ -54,14 +66,17 @@ export function PartnerServiceCard({
               <div className="flex items-center gap-2 min-w-0">
                 <h3 className="text-base font-bold text-slate-900 truncate tracking-tight">{service.name}</h3>
               </div>
-              <div onClick={(e) => e.stopPropagation()} className="flex items-center scale-90 origin-right">
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className={cn("flex items-center scale-90 origin-right", !service.enabled && "relative z-30")}
+              >
                 <button 
                   onClick={() => onToggle(service.id, !service.enabled)}
                   className={cn(
                     "flex min-w-[84px] items-center justify-center gap-2 rounded-full border px-3 py-1.5 transition-all duration-300 active:scale-95",
                     service.enabled 
                       ? "bg-emerald-50 text-emerald-600 border-emerald-200 shadow-sm" 
-                      : "bg-red-100 text-red-600 border-red-200 shadow-inner opacity-90"
+                      : "bg-red-100 text-red-500 border-red-300 ring-2 ring-red-200 shadow-md"
                   )}
                 >
                   <div className="relative flex h-1.5 w-1.5">
