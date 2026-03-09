@@ -11,6 +11,7 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { OTPInput } from "@/components/auth/OTPInput";
 import { authApi } from "@/lib/api";
+import { mask } from "@/lib/mask";
 import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import { slideInLeft, slideInRight, transitions } from "@/config/animations";
@@ -379,7 +380,7 @@ export function RegisterForm({ onLogin, onBackToLogin }: RegisterFormProps) {
           >
             <p className="text-xs text-slate-500">
               {REGISTER_MESSAGES.otpSentForRegistrationPrefix}{" "}
-              <span className="font-semibold">{mobile}</span>
+              <span className="font-semibold">{mask.phone(mobile)}</span>
             </p>
             <OTPInput
               value={otp}

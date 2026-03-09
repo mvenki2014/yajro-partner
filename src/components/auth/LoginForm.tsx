@@ -7,6 +7,7 @@ import { LOGIN_MESSAGES } from "@/config/messageConstants";
 import { AUTH_REGEX } from "@/config/regexConstants";
 import { ArrowRight } from "lucide-react";
 import { authApi } from "@/lib/api";
+import { mask } from "@/lib/mask";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/Button";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
@@ -174,7 +175,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
           transition={transitions.fast}
           className="space-y-4"
         >
-          <p className="rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-500">{LOGIN_MESSAGES.otpSentPrefix} {mobile}</p>
+          <p className="rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-500">{LOGIN_MESSAGES.otpSentPrefix} {mask.phone(mobile)}</p>
           <OTPInput
             value={otp}
             onChange={(value) => {

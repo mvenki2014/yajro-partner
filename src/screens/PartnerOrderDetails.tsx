@@ -1,12 +1,12 @@
 import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSetShell } from "@/context/ShellContext";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { DialogBackground } from "@/components/layout/DialogBackground";
 import { partnerBookings, type PartnerBookingStatus, ORDER_STATUS } from "@/data/partner-mock";
+import { mask } from "@/lib/mask";
 import { motion } from "framer-motion";
 import { HiChevronLeft } from "react-icons/hi";
 
@@ -73,17 +73,6 @@ export function PartnerOrderDetails() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const getStatusColor = (status: PartnerBookingStatus) => {
-    switch (status) {
-      case ORDER_STATUS.PENDING: return "gold";
-      case ORDER_STATUS.ACCEPTED: return "info";
-      case ORDER_STATUS.IN_PROGRESS: return "warning";
-      case ORDER_STATUS.COMPLETED: return "success";
-      case ORDER_STATUS.CANCELLED: return "destructive";
-      default: return "neutral";
-    }
   };
 
   const getStatusIcon = (status: PartnerBookingStatus) => {
@@ -234,7 +223,7 @@ export function PartnerOrderDetails() {
                 <div className="flex-1 min-w-0 pt-0.5">
                   <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-0.5">Customer Name</p>
                   <h4 className="text-sm font-extrabold text-slate-900 leading-tight truncate">{order.customerName}</h4>
-                  <p className="text-[12px] text-slate-500 font-bold opacity-80 mt-0.5">{order.customerPhone}</p>
+                  <p className="text-[12px] text-slate-500 font-bold opacity-80 tracking-widest mt-0.5">{mask.phone(order.customerPhone)}</p>
                 </div>
               </div>
 
