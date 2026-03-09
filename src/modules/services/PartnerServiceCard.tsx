@@ -26,7 +26,7 @@ export function PartnerServiceCard({
   return (
     <Card
       className={cn(
-        "mb-1 relative overflow-hidden p-3 border-slate-200/60 shadow-xl shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group",
+        "mb-1 relative overflow-hidden p-3 border-slate-200/60 shadow-xl shadow-slate-300/20 rounded-2xl hover:shadow-lg transition-all cursor-pointer group hover:z-20",
         service.enabled
           ? "bg-gradient-to-br from-white to-[#FFF9F2]"
           : "bg-gradient-to-br from-slate-100 to-slate-200/80 border-slate-300/70 grayscale-[0.2] opacity-90"

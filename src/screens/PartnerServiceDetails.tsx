@@ -182,14 +182,16 @@ export function PartnerServiceDetails({
       <div className="grid grid-cols-1 gap-4">
         {/* Description Section */}
         <motion.div variants={FADE_UP_VARIANTS} transition={{ delay: 0.1 }}>
-          <Card className="rounded-2xl border-none p-3 shadow-lg shadow-slate-200/40 bg-gradient-to-br from-white to-[#FFF9F2] overflow-hidden relative border-l-4 border-l-orange-500/60">
-            <div className="mb-3 flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center shadow-inner">
-                <HiOutlineDocumentText className="h-3.5 w-3.5 text-orange-600" />
+          <Card className="rounded-2xl border-none p-3.5 shadow-lg shadow-slate-200/40 bg-gradient-to-br from-white to-[#FFF9F2] overflow-hidden relative border-l-4 border-l-orange-500/60">
+            <div className="flex gap-3.5">
+              <div className="h-10 w-10 shrink-0 rounded-2xl bg-orange-50 flex items-center justify-center shadow-sm border border-orange-100/50">
+                <HiOutlineDocumentText className="h-5 w-5 text-orange-600" />
               </div>
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-500">About this Service</h2>
+              <div className="flex-1 min-w-0 pt-0.5">
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">About this Service</p>
+                <p className="text-[11px] leading-relaxed text-slate-600 font-bold opacity-90">{service.description}</p>
+              </div>
             </div>
-            <p className="text-[11px] leading-relaxed text-slate-600 font-bold opacity-90 pl-1">{service.description}</p>
           </Card>
         </motion.div>
   
@@ -249,53 +251,52 @@ export function PartnerServiceDetails({
   
         {/* Items Section */}
         <motion.div variants={FADE_UP_VARIANTS} transition={{ delay: 0.3 }}>
-          <Card className="rounded-2xl border-none p-3 shadow-lg shadow-slate-200/40 bg-gradient-to-br from-white to-[#FFF9F2] overflow-hidden relative border-l-4 border-l-emerald-500/60">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center shadow-inner">
-                  <HiOutlineClipboardDocumentList className="h-3.5 w-3.5 text-orange-600" />
-                </div>
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Essential Items</h2>
+          <Card className="rounded-2xl border-none p-3.5 shadow-lg shadow-slate-200/40 bg-gradient-to-br from-white to-[#FFF9F2] overflow-hidden relative border-l-4 border-l-emerald-500/60">
+            <div className="flex gap-3.5">
+              <div className="h-10 w-10 shrink-0 rounded-2xl bg-emerald-50 flex items-center justify-center shadow-sm border border-emerald-100/50">
+                <HiOutlineClipboardDocumentList className="h-5 w-5 text-emerald-600" />
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2 pl-1">
-              {service.requiredItems.length > 0 ? (
-                service.requiredItems.map((item, i) => (
-                  <motion.div
-                    key={item}
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.4 + (i * 0.05) }}
-                  >
-                    <Badge className="rounded-lg px-2.5 py-1 font-bold bg-[#FF9933]/10 text-[#B35300] text-[10px] shadow-sm border-[#FF9933]/20">
-                      {item}
-                    </Badge>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="w-full py-6 text-center rounded-xl bg-slate-50 border-2 border-dashed border-slate-200">
-                   <p className="text-[11px] font-bold text-slate-400">No special items required for this service</p>
+              <div className="flex-1 min-w-0 pt-0.5">
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2.5">Essential Items</p>
+                <div className="flex flex-wrap gap-2">
+                  {service.requiredItems.length > 0 ? (
+                    service.requiredItems.map((item, i) => (
+                      <motion.div
+                        key={item}
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.4 + (i * 0.05) }}
+                      >
+                        <Badge className="rounded-lg px-2.5 py-1 font-bold bg-[#FF9933]/10 text-[#B35300] text-[10px] shadow-sm border-[#FF9933]/20">
+                          {item}
+                        </Badge>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="w-full py-4 text-center rounded-xl bg-slate-50/50 border border-dashed border-slate-200">
+                      <p className="text-[10px] font-bold text-slate-400">No special items required</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </Card>
         </motion.div>
       </div>
 
       {/* Action Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/80 backdrop-blur-md border-t border-slate-100 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-        <div className="flex gap-3 max-w-lg mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-5 bg-white/80 backdrop-blur-2xl border-t border-white/60 flex gap-3 max-w-md mx-auto rounded-t-2xl shadow-[0_-20px_50px_-15px_rgba(0,0,0,0.15)] ring-1 ring-black/5">
+        <div className="flex gap-3 w-full">
           <Button
-            variant="secondary"
-            className="h-12 flex-1 rounded-xl border-1 border-red-90 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-100 font-bold transition-all active:scale-[0.98]"
+            variant="outline"
+            className="h-12 flex-1 rounded-xl border-red-200 text-red-600 hover:bg-red-50 font-bold transition-all active:scale-[0.98]"
             onClick={() => setIsDeleteDialogOpen(true)}
           >
-            <HiOutlineTrash className="h-5 w-5" />
+            <HiOutlineTrash className="h-4 w-4 mr-2" />
             Delete
           </Button>
           <Button
-            variant="default"
-            className="h-12 flex-[2] rounded-xl font-bold text-sm shadow-lg shadow-orange-200 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-none transition-all active:scale-[0.98]"
+            className="h-12 flex-[2] rounded-xl font-bold bg-orange-600 text-white hover:bg-orange-700 shadow-sm transition-all active:scale-[0.98]"
             onClick={() => navigate(`/services/form/${service.id}`)}
           >
             <HiOutlinePencilSquare className="h-4 w-4 mr-2" />

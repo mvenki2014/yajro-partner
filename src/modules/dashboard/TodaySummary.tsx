@@ -18,11 +18,13 @@ export function TodaySummary() {
   return (
     <Card className="relative overflow-hidden p-3.5 bg-[#FFF8ED] border-orange-100/50 shadow-sm rounded-2xl">
       <div className="pointer-events-none absolute -right-10 -bottom-12 h-40 w-40 rounded-full bg-[#FF9933]/5 blur-2xl" />
-      <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#B35300] opacity-80 mb-2.5">Today's Summary</p>
-      <div className="grid grid-cols-3 gap-2">
-        <SummaryNumber label="Earnings" value="₹18,300" />
-        <SummaryNumber label="Booking" value="1" />
-        <SummaryNumber label="Pending" value="1" />
+      <div className="relative z-10">
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#B35300] opacity-80 mb-2.5">Today's Summary</p>
+        <div className="grid grid-cols-3 gap-2">
+          <SummaryNumber label="Earnings" value="₹18,300" />
+          <SummaryNumber label="Booking" value="1" />
+          <SummaryNumber label="Pending" value="1" />
+        </div>
       </div>
     </Card>
   );

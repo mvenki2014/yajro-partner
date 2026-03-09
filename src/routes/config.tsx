@@ -7,6 +7,7 @@ import { PartnerEarnings } from "@/screens/PartnerEarnings";
 import { PartnerProfile } from "@/screens/PartnerProfile";
 import { PartnerAvailability } from "@/screens/PartnerAvailability";
 import { PartnerServiceDetails } from "@/screens/PartnerServiceDetails";
+import { PartnerOrderDetails } from "@/screens/PartnerOrderDetails";
 import { PartnerServiceForm } from "@/screens/PartnerServiceForm";
 import { useAuth, User } from "@/hooks/useAuth";
 import { NavigateFunction, Params } from "react-router-dom";
@@ -78,6 +79,11 @@ export const routesConfig: RouteConfig[] = [
     props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
+  },
+  {
+    path: "/orders/:orderId",
+    protected: true,
+    element: PartnerOrderDetails,
   },
   {
     path: "/earnings",

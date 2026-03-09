@@ -3,7 +3,7 @@ import { HiOutlineMapPin } from "react-icons/hi2";
 import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { NotificationsDialog } from "./NotificationsDialog";
-import { earningsSummary, partnerBookings, priestProfile } from "@/data/partner-mock";
+import { earningsSummary, partnerBookings, priestProfile, ORDER_STATUS } from "@/data/partner-mock";
 import { TodaySummary } from "./TodaySummary";
 import { NextPoojaCard } from "./NextPoojaCard";
 import { PendingRequests } from "./PendingRequests";
@@ -22,7 +22,7 @@ export function PartnerDashboard({ onNavigate }: { onNavigate: (tab: any) => voi
   const locationText = user?.serviceLocation || priestProfile.serviceAreas[0]?.replace(/\s\d{6}$/, "") || "Hyderabad";
   const firstName = user?.name || "Partner";
 
-  const pendingRequests = partnerBookings.filter((booking) => booking.status === "Pending");
+  const pendingRequests = partnerBookings.filter((booking) => booking.status === ORDER_STATUS.PENDING);
   const nextBooking = partnerBookings[0];
 
   const earningsValue =
@@ -78,6 +78,7 @@ export function PartnerDashboard({ onNavigate }: { onNavigate: (tab: any) => voi
             time={nextBooking.dateTime}
             customerName={nextBooking.customerName}
             address={nextBooking.address}
+            packageName={nextBooking.packageName}
           />
         )}
 
@@ -87,7 +88,8 @@ export function PartnerDashboard({ onNavigate }: { onNavigate: (tab: any) => voi
             serviceName: b.serviceType,
             dateTime: b.dateTime,
             location: b.address,
-            price: b.amount
+            price: b.amount,
+            packageName: b.packageName
           }))}
           onViewAll={() => onNavigate("orders")}
         />

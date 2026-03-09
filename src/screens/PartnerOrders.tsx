@@ -1,110 +1,126 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { Input } from "@/components/ui/Input";
-import { partnerBookings, type PartnerBooking, type PartnerBookingStatus } from "@/data/partner-mock";
+import { partnerBookings, type PartnerBookingStatus, ORDER_STATUS } from "@/data/partner-mock";
+import { OrderCard } from "@/modules/orders/OrderCard";
+import { 
+  Search, 
+  Package,
+} from "lucide-react";
 
-const statusOrder: PartnerBookingStatus[] = ["Pending", "Accepted", "In Progress", "Completed", "Cancelled"];
+type FilterStatus = "All" | "Pending" | "Ongoing" | "Completed";
 
 export function PartnerOrders({ onNavigate }: { onNavigate: (tab: any) => void }) {
+  const navigate = useNavigate();
+  const [activeFilter, setActiveFilter] = React.useState<FilterStatus>("All");
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [orders, setOrders] = React.useState(partnerBookings);
-  const [rejectReasonById, setRejectReasonById] = React.useState<Record<string, string>>({});
+  const [isScrolled, setIsScrolled] = React.useState(false);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      setIsScrolled(container.scrollTop > 10);
+    };
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useSetShell({
-    title: <PageHeader title="Orders" onBack={() => onNavigate("dashboard")} />,
+    title: <PageHeader title="My Orders" onBack={() => onNavigate("dashboard")} />,
     bottomNav: <BottomNav activeTab="orders" onTabChange={onNavigate} />,
   });
 
-  const updateStatus = (id: string, status: PartnerBookingStatus) => {
+  const filteredOrders = React.useMemo(() => {
+    return orders.filter((order) => {
+      const matchesSearch = 
+        order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.serviceType.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      if (activeFilter === "All") return matchesSearch;
+      if (activeFilter === "Pending") return matchesSearch && order.status === ORDER_STATUS.PENDING;
+      if (activeFilter === "Ongoing") return matchesSearch && (order.status === ORDER_STATUS.ACCEPTED || order.status === ORDER_STATUS.IN_PROGRESS);
+      if (activeFilter === "Completed") return matchesSearch && order.status === ORDER_STATUS.COMPLETED;
+      
+      return matchesSearch;
+    });
+  }, [orders, searchQuery, activeFilter]);
+
+  const updateStatus = React.useCallback((id: string, status: PartnerBookingStatus) => {
     setOrders((prev) => prev.map((order) => (order.id === id ? { ...order, status } : order)));
-  };
+  }, []);
+
+  const filterTabs: FilterStatus[] = ["All", "Pending", "Ongoing", "Completed"];
 
   return (
-    <div className="space-y-3 pb-20">
-      {orders.map((order) => (
-        <OrderCard
-          key={order.id}
-          order={order}
-          onUpdateStatus={updateStatus}
-          rejectReason={rejectReasonById[order.id] || ""}
-          onRejectReasonChange={(value) => setRejectReasonById((prev) => ({ ...prev, [order.id]: value }))}
-        />
-      ))}
-    </div>
-  );
-}
+    <div className="flex flex-col h-[calc(100vh-140px)] -mx-4">
+      {/* Search and Filters - Sticky Header */}
+      <div className={`z-30 pb-3 transition-all duration-300 px-4 bg-transparent sticky top-0 ${
+        isScrolled ? "shadow-[0_4px_12px_rgba(0,0,0,0.06)] border-b border-b-slate-200/50 bg-slate-50/80 backdrop-blur-md" : ""
+      }`}>
+        <div className="space-y-3 pt-2">
+          <div className="relative group">
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search orders, customers..."
+              className="w-full rounded-2xl bg-white px-4 py-3 pr-12 text-sm ring-1 ring-slate-200 shadow-sm outline-none focus:ring-2 focus:ring-[#FF9933]/45 transition-all group-hover:ring-slate-300"
+            />
+            <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#FF9933] transition-colors">
+              <Search className="h-5 w-5" />
+            </div>
+          </div>
 
-function OrderCard({
-  order,
-  onUpdateStatus,
-  rejectReason,
-  onRejectReasonChange,
-}: {
-  order: PartnerBooking;
-  onUpdateStatus: (id: string, status: PartnerBookingStatus) => void;
-  rejectReason: string;
-  onRejectReasonChange: (value: string) => void;
-}) {
-  const canReject = order.status === "Pending";
-
-  return (
-    <Card className="p-4">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <h3 className="text-base font-bold text-slate-900">{order.serviceType}</h3>
-          <p className="text-xs text-slate-500">{order.id} • {order.dateTime}</p>
-        </div>
-        <Badge variant={order.status === "Pending" ? "gold" : order.status === "Completed" ? "success" : "neutral"}>
-          {order.status}
-        </Badge>
-      </div>
-
-      <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm text-slate-700 space-y-1">
-        <p><span className="font-semibold">Customer:</span> {order.customerName}</p>
-        <p><span className="font-semibold">Address:</span> {order.address}</p>
-        <p><span className="font-semibold">Amount:</span> INR {order.amount}</p>
-        <p><span className="font-semibold">Notes:</span> {order.notes}</p>
-      </div>
-
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-        {statusOrder.map((status) => (
-          <Button
-            key={status}
-            size="sm"
-            variant={order.status === status ? "default" : "secondary"}
-            onClick={() => onUpdateStatus(order.id, status)}
-          >
-            {status}
-          </Button>
-        ))}
-      </div>
-
-      {canReject && (
-        <div className="mt-3 space-y-2">
-          <Input placeholder="Rejection reason" value={rejectReason} onChange={(e) => onRejectReasonChange(e.target.value)} />
-          <div className="grid grid-cols-2 gap-2">
-            <Button onClick={() => onUpdateStatus(order.id, "Accepted")}>Accept</Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                if (!rejectReason.trim()) return;
-                onUpdateStatus(order.id, "Cancelled");
-              }}
-            >
-              Reject
-            </Button>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4">
+            <div className="flex gap-2 min-w-max py-0.5">
+              {filterTabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveFilter(tab)}
+                  className={`px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all duration-300 active:scale-95 whitespace-nowrap ${
+                    activeFilter === tab 
+                      ? "bg-[#FF9933] text-white shadow-lg shadow-orange-200/50" 
+                      : "bg-white text-slate-600 border border-slate-200/60 shadow-sm hover:border-orange-200 hover:text-orange-500"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      )}
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button variant="outline">Call Customer</Button>
-        <Button variant="secondary">Chat (Optional)</Button>
       </div>
-    </Card>
+
+      {/* Orders List - Scrollable Area */}
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto px-4 scroll-smooth"
+      >
+        <div className="space-y-4 pt-2 pb-24">
+          {filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <OrderCard
+                key={order.id}
+                order={order}
+                onClick={() => navigate(`/orders/${order.id}`)}
+                onUpdateStatus={updateStatus}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-3xl border border-slate-100">
+              <Package className="h-12 w-12 text-slate-200 mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900">No orders found</h3>
+              <p className="text-sm text-slate-500 mt-1">Try adjusting your filters or search query.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

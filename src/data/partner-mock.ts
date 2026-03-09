@@ -32,12 +32,15 @@ export type PartnerService = {
   packages?: ServicePackage[];
 };
 
-export type PartnerBookingStatus =
-  | "Pending"
-  | "Accepted"
-  | "In Progress"
-  | "Completed"
-  | "Cancelled";
+export const ORDER_STATUS = {
+  PENDING: "Pending",
+  ACCEPTED: "Accepted",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+} as const;
+
+export type PartnerBookingStatus = typeof ORDER_STATUS[keyof typeof ORDER_STATUS];
 
 export type PartnerBooking = {
   id: string;
@@ -48,6 +51,19 @@ export type PartnerBooking = {
   amount: number;
   notes: string;
   status: PartnerBookingStatus;
+  customerPhone: string;
+  location: {
+    lat: number;
+    lng: number;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  serviceImage?: string;
+  itemsRequested?: string[];
+  packageName?: string;
 };
 
 export const priestProfile: PriestProfile = {
@@ -111,32 +127,71 @@ export const partnerBookings: PartnerBooking[] = [
   {
     id: "ord-1001",
     customerName: "Raghavendra Rao",
-    address: "Madhapur, Hyderabad",
+    customerPhone: "+91 98765 43210",
+    address: "Flat 402, Sai Residency, Madhapur, Hyderabad",
+    location: {
+      lat: 17.4483,
+      lng: 78.3915,
+      addressLine1: "Flat 402, Sai Residency",
+      addressLine2: "Madhapur",
+      city: "Hyderabad",
+      state: "Telangana",
+      zipCode: "500081"
+    },
     dateTime: "Today • Morning Slot (06 AM - 09 AM)",
     serviceType: "Satyanarayana Pooja",
     amount: 3500,
     notes: "Please bring extra flowers and kumkum.",
     status: "Pending",
+    serviceImage: "https://images.unsplash.com/photo-1609154767012-331529e7d73b?auto=format&fit=crop&q=80&w=200",
+    itemsRequested: ["Kalash", "Coconut", "Mango Leaves"],
+    packageName: "Basic"
   },
   {
     id: "ord-1002",
     customerName: "Sowmya N",
-    address: "Kondapur, Hyderabad",
+    customerPhone: "+91 98765 43211",
+    address: "H.No 12-5, Kondapur Main Road, Kondapur, Hyderabad",
+    location: {
+      lat: 17.4622,
+      lng: 78.3568,
+      addressLine1: "H.No 12-5",
+      addressLine2: "Kondapur Main Road, Kondapur",
+      city: "Hyderabad",
+      state: "Telangana",
+      zipCode: "500084"
+    },
     dateTime: "Tomorrow • Morning Slot (08 AM - 11 AM)",
     serviceType: "Griha Pravesh",
     amount: 7000,
     notes: "Muhurtam starts at 8:20 AM.",
     status: "Accepted",
+    serviceImage: "https://images.unsplash.com/photo-1585909665970-21c6217217f3?auto=format&fit=crop&q=80&w=200",
+    itemsRequested: ["Havan Samagri", "Ghee", "Milk"],
+    packageName: "Premium"
   },
   {
     id: "ord-1003",
     customerName: "Rakesh Kumar",
-    address: "Begumpet, Hyderabad",
+    customerPhone: "+91 98765 43212",
+    address: "Apartment 101, Begumpet, Hyderabad",
+    location: {
+      lat: 17.4399,
+      lng: 78.4608,
+      addressLine1: "Apartment 101",
+      addressLine2: "Begumpet",
+      city: "Hyderabad",
+      state: "Telangana",
+      zipCode: "500016"
+    },
     dateTime: "28 Feb • Evening Slot (04 PM - 07 PM)",
     serviceType: "Rudrabhishekam",
     amount: 4200,
     notes: "Include laghu nyasam.",
     status: "In Progress",
+    serviceImage: "https://images.unsplash.com/photo-1590161401392-50d405230869?auto=format&fit=crop&q=80&w=200",
+    itemsRequested: ["Honey", "Curd", "Ghee", "Milk"],
+    packageName: "Standard"
   },
 ];
 
