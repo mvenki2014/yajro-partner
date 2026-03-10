@@ -52,7 +52,7 @@ function getStatusVariant(status: PartnerBookingStatus) {
   }
 }
 
-export function PartnerOrderDetails() {
+export function OrderDetails() {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
   const [order, setOrder] = React.useState(() =>

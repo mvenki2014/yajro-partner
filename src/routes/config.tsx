@@ -1,14 +1,14 @@
 import * as React from "react";
 import { Login } from "@/screens/Login";
-import { PartnerDashboard } from "@/modules/dashboard/PartnerDashboard";
-import { PartnerServices } from "@/modules/services/PartnerServices";
-import { PartnerOrders } from "@/screens/PartnerOrders";
-import { PartnerEarnings } from "@/screens/PartnerEarnings";
-import { PartnerProfile } from "@/screens/PartnerProfile";
-import { PartnerAvailability } from "@/screens/PartnerAvailability";
-import { PartnerServiceDetails } from "@/screens/PartnerServiceDetails";
-import { PartnerOrderDetails } from "@/screens/PartnerOrderDetails";
-import { PartnerServiceForm } from "@/screens/PartnerServiceForm";
+import { Dashboard } from "@/modules/dashboard/Dashboard";
+import { Services } from "@/modules/services/Services";
+import { MyOrders } from "@/screens/MyOrders";
+import { MyEarnings } from "@/screens/MyEarnings";
+import { Profile } from "@/screens/Profile";
+import { ManageAvailability } from "@/screens/ManageAvailability";
+import { ServiceDetails } from "@/screens/ServiceDetails";
+import { OrderDetails } from "@/screens/OrderDetails";
+import { ServiceForm } from "@/screens/ServiceForm";
 import { useAuth, User } from "@/hooks/useAuth";
 import { NavigateFunction, Params } from "react-router-dom";
 
@@ -37,7 +37,7 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/",
     protected: true,
-    element: PartnerDashboard,
+    element: Dashboard,
     props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
@@ -45,7 +45,7 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/services",
     protected: true,
-    element: PartnerServices,
+    element: Services,
     props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
@@ -53,7 +53,7 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/services/:serviceId",
     protected: true,
-    element: PartnerServiceDetails,
+    element: ServiceDetails,
     props: (params, __, ___, { handleNavigation }) => ({
       serviceId: params.serviceId,
       onNavigate: handleNavigation,
@@ -62,12 +62,12 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/services/form",
     protected: true,
-    element: PartnerServiceForm,
+    element: ServiceForm,
   },
   {
     path: "/services/form/:serviceId",
     protected: true,
-    element: PartnerServiceForm,
+    element: ServiceForm,
     props: (params) => ({
       serviceId: params.serviceId,
     }),
@@ -75,7 +75,7 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/orders",
     protected: true,
-    element: PartnerOrders,
+    element: MyOrders,
     props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
@@ -83,12 +83,12 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/orders/:orderId",
     protected: true,
-    element: PartnerOrderDetails,
+    element: OrderDetails,
   },
   {
     path: "/earnings",
     protected: true,
-    element: PartnerEarnings,
+    element: MyEarnings,
     props: (_, __, ___, { handleNavigation }) => ({
       onNavigate: handleNavigation,
     }),
@@ -96,7 +96,7 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/profile",
     protected: true,
-    element: PartnerProfile,
+    element: Profile,
     props: (_, __, navigate, { handleNavigation }) => {
       const { logout } = useAuth();
       return {
@@ -111,7 +111,7 @@ export const routesConfig: RouteConfig[] = [
   {
     path: "/availability",
     protected: true,
-    element: PartnerAvailability,
+    element: ManageAvailability,
     props: (_, __, navigate) => ({
       onBack: () => navigate("/"),
     }),

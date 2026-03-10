@@ -13,7 +13,7 @@ interface PartnerServiceCardProps {
   onOpenDetails: (service: PartnerService) => void;
 }
 
-export function PartnerServiceCard({
+export function ServiceCard({
   service,
   onToggle,
   onEdit,

@@ -12,7 +12,7 @@ import { StatusToggle } from "./StatusToggle";
 import { NotificationBell } from "./NotificationBell";
 import { useAuth } from "@/hooks/useAuth";
 
-export function PartnerDashboard({ onNavigate }: { onNavigate: (tab: any) => void }) {
+export function Dashboard({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const { user } = useAuth();
   const [isOnline, setIsOnline] = React.useState(true);
   const [hasUnread, setHasUnread] = React.useState(true);

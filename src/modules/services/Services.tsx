@@ -3,14 +3,14 @@ import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/Button";
 import { partnerServices, type PartnerService } from "@/data/partner-mock";
-import { PartnerServiceCard } from "./PartnerServiceCard";
-import { ServiceFilters } from "./ServiceFilters";
-import { DeleteServiceConfirmDialog } from "./DeleteServiceConfirmDialog";
+import { ServiceCard } from "@/modules/services/ServiceCard";
+import { ServiceFilters } from "@/modules/services/ServiceFilters";
+import { DeleteServiceConfirmDialog } from "@/modules/services/DeleteServiceConfirmDialog";
 import { Plus } from "lucide-react";
 import { HiChevronLeft } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
-export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void }) {
+export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const [services, setServices] = React.useState(partnerServices);
   const [serviceToDelete, setServiceToDelete] = React.useState<PartnerService | null>(null);
   const [selectedCategory, setSelectedCategory] = React.useState("All");
@@ -138,7 +138,7 @@ export function PartnerServices({ onNavigate }: { onNavigate: (tab: any) => void
 
         <div className="grid gap-2 pb-12">
           {filteredServices.map((service) => (
-            <PartnerServiceCard
+            <ServiceCard
               key={service.id}
               service={service}
               onToggle={toggleService}

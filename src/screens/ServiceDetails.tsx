@@ -54,7 +54,7 @@ const FADE_UP_VARIANTS = {
   visible: { opacity: 1, y: 0 }
 };
 
-export function PartnerServiceDetails({
+export function ServiceDetails({
   serviceId,
 }: {
   serviceId?: string;

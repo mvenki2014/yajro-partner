@@ -131,11 +131,11 @@ export const OrderCard = React.memo(function OrderCard({
             </div>
             <span className="text-sm">{order.dateTime}</span>
           </div>
-          <div className="flex items-start gap-2 text-slate-500">
-            <div className="h-6.5 w-6.5 rounded-lg bg-orange-50 flex items-center justify-center shadow-sm flex-shrink-0 mt-0.5">
+          <div className="flex items-center gap-2 text-slate-600">
+            <div className="h-6.5 w-6.5 rounded-lg bg-orange-50 flex items-center justify-center shadow-sm">
               <MapPin className="h-3.5 w-3.5 text-orange-500" />
             </div>
-            <span className="text-xs line-clamp-1">{order.address}</span>
+            <span className="text-sm line-clamp-1">{order.address}</span>
           </div>
         </div>
 

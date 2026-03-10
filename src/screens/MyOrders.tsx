@@ -12,7 +12,7 @@ import {
 
 type FilterStatus = "All" | "Pending" | "Ongoing" | "Completed";
 
-export function PartnerOrders({ onNavigate }: { onNavigate: (tab: any) => void }) {
+export function MyOrders({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = React.useState<FilterStatus>("All");
   const [searchQuery, setSearchQuery] = React.useState("");

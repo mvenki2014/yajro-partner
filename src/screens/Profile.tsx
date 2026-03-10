@@ -23,7 +23,7 @@ import packageJson from "../../package.json";
 import { priestProfile } from "@/data/partner-mock";
 import { useAuth } from "@/hooks/useAuth";
 
-export function PartnerProfile({ onNavigate, onLogout }: { onNavigate: (tab: any) => void; onLogout: () => void }) {
+export function Profile({ onNavigate, onLogout }: { onNavigate: (tab: any) => void; onLogout: () => void }) {
   const { user } = useAuth();
   const displayName = user?.name || priestProfile.fullName;
   const experienceYears = user?.experienceYears || priestProfile.experienceYears;

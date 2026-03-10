@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { earningsSummary } from "@/data/partner-mock";
 
-export function PartnerEarnings({ onNavigate }: { onNavigate: (tab: any) => void }) {
+export function MyEarnings({ onNavigate }: { onNavigate: (tab: any) => void }) {
   const [withdrawAmount, setWithdrawAmount] = React.useState("");
 
   useSetShell({

@@ -24,7 +24,7 @@ function loadStoredConfig(): Partial<AvailabilityConfig & { dateSlots?: Record<s
   }
 }
 
-export function PartnerAvailability({ onBack }: { onBack: () => void }) {
+export function ManageAvailability({ onBack }: { onBack: () => void }) {
   const today = new Date();
   const todayISO = toISO(today);
   const stored = React.useMemo(() => loadStoredConfig(), []);

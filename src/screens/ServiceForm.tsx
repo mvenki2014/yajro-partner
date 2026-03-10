@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AddServiceStepForm } from "@/modules/services/AddServiceStepForm";
 import { partnerServices, type PartnerService } from "@/data/partner-mock";
 
-export function PartnerServiceForm({ serviceId }: { serviceId?: string }) {
+export function ServiceForm({ serviceId }: { serviceId?: string }) {
   const navigate = useNavigate();
 
   const initialData = React.useMemo(
