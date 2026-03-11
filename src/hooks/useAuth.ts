@@ -16,6 +16,7 @@ export interface User {
 export const AUTH_QUERY_KEY = ['auth-user'];
 
 export function useAuth() {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const queryClient = useQueryClient();
   
   // We use a local state only to trigger a re-render when storage changes,
@@ -87,6 +88,7 @@ export function useAuth() {
   });
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       await authApi.logout();
     } catch (e) {
@@ -95,6 +97,7 @@ export function useAuth() {
       tokenStorage.clearTokens();
       queryClient.setQueryData(AUTH_QUERY_KEY, null);
       queryClient.clear();
+      setIsLoggingOut(false);
     }
   };
 
@@ -124,6 +127,7 @@ export function useAuth() {
     isAuthenticated: !!user && !!accessToken,
     isLoading: isLoading || isAuthenticating,
     isFetching,
+    isLoggingOut,
     error,
     login: handleSetCredentials,
     logout: handleLogout,

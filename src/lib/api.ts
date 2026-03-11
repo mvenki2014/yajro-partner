@@ -88,6 +88,16 @@ apiClient.interceptors.response.use(
       const refreshToken = tokenStorage.getRefreshToken();
       const accessToken = tokenStorage.getAccessToken();
 
+      const authEndpoints = [
+        API_ENDPOINTS.AUTH.VERIFY_OTP,
+        API_ENDPOINTS.AUTH.REQUEST_OTP,
+        API_ENDPOINTS.AUTH.REGISTER_VERIFY,
+        API_ENDPOINTS.AUTH.REGISTER_INITIATE,
+        API_ENDPOINTS.AUTH.REGISTER_RESEND,
+      ];
+
+      const isAuthEndpoint = authEndpoints.some(endpoint => originalRequest.url?.includes(endpoint));
+
       if (refreshToken && originalRequest.url !== "/auth/refresh") {
         try {
           // Note: Use fresh axios instance to avoid infinite loop with interceptor
@@ -129,7 +139,10 @@ apiClient.interceptors.response.use(
         }
       } else {
         isRefreshing = false;
-        logoutUser();
+        // Only logout if it's NOT an auth endpoint, otherwise it's just a failed login attempt
+        if (!isAuthEndpoint) {
+          logoutUser();
+        }
       }
     }
 

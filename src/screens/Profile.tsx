@@ -18,13 +18,14 @@ import {
   HelpCircle,
   Info,
   LogOut,
+  Loader2,
 } from "lucide-react";
 import packageJson from "../../package.json";
 import { priestProfile } from "@/data/partner-mock";
 import { useAuth } from "@/hooks/useAuth";
 
 export function Profile({ onNavigate, onLogout }: { onNavigate: (tab: any) => void; onLogout: () => void }) {
-  const { user } = useAuth();
+  const { user, isLoggingOut, logout } = useAuth();
   const displayName = user?.name || priestProfile.fullName;
   const experienceYears = user?.experienceYears || priestProfile.experienceYears;
 
@@ -170,10 +171,18 @@ export function Profile({ onNavigate, onLogout }: { onNavigate: (tab: any) => vo
       <Button
         variant="outline"
         className="w-full h-12 border-red-100 text-red-600 hover:bg-red-50 hover:text-red-700 font-bold rounded-2xl"
-        onClick={onLogout}
+        onClick={async () => {
+          await logout();
+          onLogout();
+        }}
+        disabled={isLoggingOut}
       >
-        <LogOut className="h-4 w-4" />
-        Logout from Yajro Priests
+        {isLoggingOut ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <LogOut className="h-4 w-4" />
+        )}
+        {isLoggingOut ? "Logging out..." : "Logout from Yajro Priests"}
       </Button>
     </div>
   );

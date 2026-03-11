@@ -85,6 +85,8 @@ export function LoginForm({ onLogin }: LoginFormProps) {
       toast.success(message || LOGIN_MESSAGES.toastLoginSuccess);
     },
     onError: (error: any) => {
+      // Clear OTP and refocus using exposed method if available, or just clear state
+      setValue("otp", "", { shouldValidate: false });
       toast.error(error.message || "Invalid OTP");
     },
   });
@@ -123,7 +125,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
   };
 
   const handleResendOtp = async () => {
-    if (resendTimer > 0) return;
+    if (resendTimer > 0 || isLoading) return;
     resendOtpMutation.mutate(`+91${mobile}`);
   };
 
@@ -202,7 +204,15 @@ export function LoginForm({ onLogin }: LoginFormProps) {
             )}
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Button variant="secondary" onClick={() => setStep("mobile")} disabled={isLoading}>Back</Button>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                if (!isLoading) setStep("mobile");
+              }} 
+              disabled={isLoading}
+            >
+              Back
+            </Button>
             <Button onClick={handleVerifyOtp} disabled={isLoading}>
               {verifyOtpMutation.isPending ? "Verifying..." : "Login"}
             </Button>

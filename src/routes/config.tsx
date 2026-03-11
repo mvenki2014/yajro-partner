@@ -98,11 +98,9 @@ export const routesConfig: RouteConfig[] = [
     protected: true,
     element: Profile,
     props: (_, __, navigate, { handleNavigation }) => {
-      const { logout } = useAuth();
       return {
         onNavigate: handleNavigation,
-        onLogout: async () => {
-          await logout();
+        onLogout: () => {
           navigate("/login");
         },
       };

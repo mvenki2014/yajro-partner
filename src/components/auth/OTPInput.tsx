@@ -19,9 +19,10 @@ export function OTPInput({
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
   React.useEffect(() => {
-    // Focus the first input on mount
-    inputRefs.current[0]?.focus();
-  }, []);
+    if (!value) {
+      inputRefs.current[0]?.focus();
+    }
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const val = e.target.value;
@@ -64,6 +65,7 @@ export function OTPInput({
       inputs.push(
         <input
           key={i}
+          id={`otp-input-${i}`}
           ref={(el) => {
             inputRefs.current[i] = el;
           }}
