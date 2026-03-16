@@ -31,3 +31,9 @@ export const AUTH_SCHEMA_MESSAGES = {
   languagesRequired: "Select at least one language",
   serviceLocationRequired: "Service location is required",
 } as const;
+
+export const KYC_MESSAGES = {
+  ribbonTitle: "KYC pending",
+  ribbonDescription: "Complete your KYC in Profile to activate services and avoid missing bookings.",
+  ribbonAction: "Update KYC",
+} as const;

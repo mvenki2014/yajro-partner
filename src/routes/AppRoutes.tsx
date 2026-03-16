@@ -2,6 +2,7 @@ import * as React from "react";
 import { Routes, Route, useNavigate, useParams, useSearchParams, Navigate } from "react-router-dom";
 import { ShellProvider } from "@/context/ShellContext";
 import { MobileShell } from "@/components/layout/MobileShell";
+import { KycWarningRibbon } from "@/components/layout/KycWarningRibbon";
 import { routesConfig, RouteConfig } from "./config";
 import { User } from "@/hooks/useAuth";
 
@@ -53,7 +54,13 @@ export function AppRoutes({ user }: AppRoutesProps) {
 
   return (
     <ShellProvider>
-      <MobileShell>
+      <MobileShell
+        kycRibbon={
+          user && user.isKycVerified !== true ? (
+            <KycWarningRibbon onAction={() => navigate("/profile")} />
+          ) : null
+        }
+      >
         <Routes>
           {routesConfig.map((route) => {
             const RouteElement = (

@@ -7,11 +7,13 @@ export function MobileShell({
                               children,
                               footer: footerProp,
                               bottomNav: bottomNavProp,
+                              kycRibbon,
                             }: {
   title?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
   bottomNav?: React.ReactNode;
+  kycRibbon?: React.ReactNode;
 }) {
   const { title: contextTitle, footer: contextFooter, bottomNav: contextBottomNav } = useShellValues();
 
@@ -58,13 +60,18 @@ export function MobileShell({
           {children}
         </main>
 
-        {(footer || bottomNav) && (
-          <footer className="shrink-0 z-30">
+        {(kycRibbon || footer || bottomNav) && (
+          <footer className={cn("shrink-0 z-30", bottomNav && "pb-16")}>
             {footer && (
               <div className="mx-auto w-full max-w-[420px] px-4 pb-4">
                 <div className="rounded-2xl bg-white/90 backdrop-blur ring-1 ring-slate-200 shadow-lg shadow-slate-900/5 p-3 pointer-events-auto">
                   {footer}
                 </div>
+              </div>
+            )}
+        {kycRibbon && (
+              <div className="mx-auto w-full max-w-[460px]">
+                {kycRibbon}
               </div>
             )}
             {bottomNav && (

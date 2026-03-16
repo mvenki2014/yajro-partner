@@ -9,7 +9,7 @@ import { ManageAvailability } from "@/screens/ManageAvailability";
 import { ServiceDetails } from "@/screens/ServiceDetails";
 import { OrderDetails } from "@/screens/OrderDetails";
 import { ServiceForm } from "@/screens/ServiceForm";
-import { useAuth, User } from "@/hooks/useAuth";
+import { User } from "@/hooks/useAuth";
 import { NavigateFunction, Params } from "react-router-dom";
 
 export interface RouteConfig {

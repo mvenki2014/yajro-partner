@@ -94,8 +94,8 @@ export const Step3Finalize: React.FC<Step3Props> = ({
       <div className="pt-2">
         <div className="flex items-center justify-between p-4 rounded-2xl bg-emerald-50/50 border border-emerald-100 shadow-sm">
           <div className="space-y-0.5">
-            <p className="text-sm font-bold text-slate-900">Enable Service</p>
-            <p className="text-[11px] text-slate-500">Make this service visible to customers</p>
+            <p className="text-sm font-bold text-slate-900">Activate Opted Service</p>
+            <p className="text-[11px] text-slate-500">Make this opted service visible to customers</p>
           </div>
           <Switch 
             checked={formData.enabled} 
@@ -109,7 +109,7 @@ export const Step3Finalize: React.FC<Step3Props> = ({
           <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center">
             <Package className="w-3 h-3" />
           </div>
-          <p className="text-xs font-bold">Review Summary</p>
+          <p className="text-xs font-bold">Opted Service Summary</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -122,4 +122,3 @@ export const Step3Finalize: React.FC<Step3Props> = ({
     </div>
   );
 };
-

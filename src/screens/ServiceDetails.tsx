@@ -1,4 +1,6 @@
 import * as React from "react";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useSetShell } from "@/context/ShellContext";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -6,8 +8,11 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { DeleteServiceConfirmDialog } from "@/modules/services/DeleteServiceConfirmDialog";
-import { partnerServices } from "@/data/partner-mock";
+import { useAuth } from "@/hooks/useAuth";
+import { usePoojaServices, POOJA_SERVICES_QUERY_KEY } from "@/hooks/usePoojaServices";
 import { StatusToggle } from "@/modules/dashboard/StatusToggle";
+import { poojaServicesApi } from "@/lib/api";
+import { PACKAGE_CONFIGS } from "@/config/appConfig";
 import {
   HiOutlineClock,
   HiOutlineDocumentText,
@@ -22,33 +27,6 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Package, IndianRupee } from "lucide-react";
 
-const PACKAGE_CONFIGS = {
-  Basic: {
-    container: "bg-[#F8EFE6] border-[#E2C7AF] shadow-md shadow-orange-200/40",
-    title: "text-[#9A3412]",
-    glow: "bg-[#E7B98A]",
-    iconBg: "bg-orange-100/50",
-    iconColor: "text-orange-600",
-    badge: "bg-orange-100/80 text-[#9A3412]"
-  },
-  Standard: {
-    container: "bg-[#EEF6F0] border-[#BFE3CC] shadow-md shadow-green-200/40",
-    title: "text-[#166534]",
-    glow: "bg-[#86D19E]",
-    iconBg: "bg-green-100/50",
-    iconColor: "text-green-600",
-    badge: "bg-green-100/80 text-[#166534]"
-  },
-  Premium: {
-    container: "bg-[#F7ECEF] border-[#E3B8C2] shadow-md shadow-rose-200/40",
-    title: "text-[#9F1239]",
-    glow: "bg-[#F2A7B5]",
-    iconBg: "bg-rose-100/50",
-    iconColor: "text-rose-600",
-    badge: "bg-rose-100/80 text-[#9F1239]"
-  }
-} as const;
-
 const FADE_UP_VARIANTS = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
@@ -60,20 +38,40 @@ export function ServiceDetails({
   serviceId?: string;
 }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { services, isLoading } = usePoojaServices();
   const service = React.useMemo(
-    () => partnerServices.find((item) => item.id === serviceId),
-    [serviceId]
+    () => services.find((item) => item.id === serviceId),
+    [serviceId, services]
   );
   const [enabled, setEnabled] = React.useState(service?.enabled ?? false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
+  const toggleMutation = useMutation({
+    mutationFn: ({ serviceId, enabled }: { serviceId: string; enabled: boolean }) => {
+      if (enabled && !user?.isKycVerified) {
+        throw new Error("Complete KYC before activating a service");
+      }
+      return poojaServicesApi.updateStatus(serviceId, { enabled });
+    },
+    onSuccess: (response) => {
+      setEnabled(Boolean(response.data?.enabled));
+      queryClient.invalidateQueries({ queryKey: POOJA_SERVICES_QUERY_KEY });
+    },
+    onError: (error: Error) => {
+      setEnabled(service?.enabled ?? false);
+      toast.error(error.message || "Failed to update service status");
+    },
+  });
+
   React.useEffect(() => {
-    if (!service) {
+    if (!isLoading && !service) {
       navigate("/services", { replace: true });
     } else {
-      setEnabled(service.enabled);
+      setEnabled(service?.enabled ?? false);
     }
-  }, [service, navigate]);
+  }, [service, isLoading, navigate]);
 
   useSetShell({
     title: (
@@ -84,7 +82,20 @@ export function ServiceDetails({
         rightElement={
           <StatusToggle
             isOnline={enabled}
-            onToggle={() => setEnabled((prev) => !prev)}
+            onToggle={() => {
+              if (!service || toggleMutation.isPending) {
+                return;
+              }
+
+              const nextEnabled = !enabled;
+              if (nextEnabled && !user?.isKycVerified) {
+                toast.error("Complete KYC before activating a service");
+                return;
+              }
+
+              setEnabled(nextEnabled);
+              toggleMutation.mutate({ serviceId: service.id, enabled: nextEnabled });
+            }}
             activeLabel="ACTIVE"
             inactiveLabel="PAUSED"
             activeLabelClassName="text-emerald-600"
@@ -310,11 +321,8 @@ export function ServiceDetails({
         onOpenChange={setIsDeleteDialogOpen}
         serviceName={service.name}
         onConfirm={() => {
-          const index = partnerServices.findIndex((item) => item.id === service.id);
-          if (index !== -1) {
-            partnerServices.splice(index, 1);
-          }
-          navigate("/services");
+          toast.error("Delete service API is not available yet");
+          setIsDeleteDialogOpen(false);
         }}
       />
     </motion.div>

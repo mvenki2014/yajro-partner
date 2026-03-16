@@ -55,7 +55,7 @@ export function ServiceCard({
             <img
               src={serviceImage}
               alt={service.name}
-              className="w-full h-full object-cover p-1 transition-transform group-hover:scale-105 duration-500"
+              className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = "/images/dummy-pooja-service.png";
               }}

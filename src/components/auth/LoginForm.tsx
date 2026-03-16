@@ -74,15 +74,15 @@ export function LoginForm({ onLogin }: LoginFormProps) {
     mutationFn: ({ mobileNumber, otp }: { mobileNumber: string; otp: string }) => 
       authApi.verifyOtp(mobileNumber, otp),
     onSuccess: (response) => {
-      const { data, message } = response;
+      const { user, accessToken, refreshToken } = response;
       const loginData = {
-        user: data.user,
-        accessToken: data.accessToken,
-        refreshToken: data.refreshToken,
+        user,
+        accessToken,
+        refreshToken,
       };
       login(loginData);
-      onLogin(data.user);
-      toast.success(message || LOGIN_MESSAGES.toastLoginSuccess);
+      onLogin(user);
+      toast.success(response.message || LOGIN_MESSAGES.toastLoginSuccess);
     },
     onError: (error: any) => {
       // Clear OTP and refocus using exposed method if available, or just clear state

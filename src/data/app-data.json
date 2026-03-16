@@ -18,6 +18,7 @@
       "significance": "Performed to seek Sri Satyanarayana’s blessings for wellbeing, success, and family peace.",
       "baseFromPrice": 1499,
       "categoryId": "home-ceremonies",
+      "requiredItems": ["Kalash", "Coconut", "Flowers"],
       "languages": ["Telugu", "Tamil", "Hindi", "Kannada", "English"],
       "packages": [
         {
@@ -51,6 +52,7 @@
       "significance": "A sacred house-warming ritual to purify the space and invite positive energy.",
       "baseFromPrice": 2999,
       "categoryId": "home-ceremonies",
+      "requiredItems": ["Mango Leaves", "Milk", "Havan Samagri"],
       "languages": ["Telugu", "Hindi", "Sanskrit", "English"],
       "packages": [
         {
@@ -84,6 +86,7 @@
       "significance": "Performed before a new vehicle’s first use to seek divine protection and safety.",
       "baseFromPrice": 799,
       "categoryId": "car-bike",
+      "requiredItems": ["Lemon", "Coconut", "Kumkum"],
       "languages": ["Telugu", "Tamil", "Hindi", "English"],
       "packages": [
         {
@@ -117,6 +120,7 @@
       "significance": "Seek divine protection for your two-wheeler and safe travels.",
       "baseFromPrice": 501,
       "categoryId": "car-bike",
+      "requiredItems": ["Lemon", "Flowers", "Coconut"],
       "languages": ["Telugu", "Hindi", "Tamil"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 501, "includesSamagri": false, "highlights": ["Basic Pooja", "Sankalpam"] },
@@ -131,6 +135,7 @@
       "significance": "Celebrating the birth of Lord Ganesha, the remover of obstacles.",
       "baseFromPrice": 2100,
       "categoryId": "festivals",
+      "requiredItems": ["Ganesh Idol", "Modak", "Durva Grass"],
       "languages": ["Hindi", "Marathi", "Telugu", "English"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 2100, "includesSamagri": false, "highlights": ["Sthapana Pooja", "Aarti"] },
@@ -145,6 +150,7 @@
       "significance": "Special pooja performed during Diwali for wealth, prosperity and success.",
       "baseFromPrice": 2500,
       "categoryId": "festivals",
+      "requiredItems": ["Lakshmi Idol", "Oil Lamps", "Flowers"],
       "languages": ["Hindi", "Gujarati", "Telugu", "English"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 2500, "includesSamagri": false, "highlights": ["Lakshmi Pooja", "Kuber Pooja"] },
@@ -159,6 +165,7 @@
       "significance": "Nine days of worship dedicated to the nine forms of Goddess Durga.",
       "baseFromPrice": 1800,
       "categoryId": "festivals",
+      "requiredItems": ["Kumkum", "Flowers", "Coconut"],
       "languages": ["Hindi", "Sanskrit", "English"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 1800, "includesSamagri": false, "highlights": ["Daily Pooja", "Saptashati Path"] },
@@ -173,6 +180,7 @@
       "significance": "Vedic astrology based matching of birth charts for marital compatibility.",
       "baseFromPrice": 1100,
       "categoryId": "astrology",
+      "requiredItems": ["Birth Details", "Gotra Information"],
       "languages": ["Hindi", "Telugu", "Tamil", "English"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 1100, "includesSamagri": false, "highlights": ["Guna Milan", "Dosha analysis"] },
@@ -187,6 +195,7 @@
       "significance": "A powerful ritual to appease the nine planets and reduce their negative effects.",
       "baseFromPrice": 3500,
       "categoryId": "astrology",
+      "requiredItems": ["Navadhanya", "Ghee", "Havan Samagri"],
       "languages": ["Sanskrit", "Hindi", "Telugu"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 3500, "includesSamagri": false, "highlights": ["Homam", "Navagraha Japa"] },
@@ -201,6 +210,7 @@
       "significance": "Ancient Vedic ritual involving the bathing of Shiva Lingam with sacred offerings.",
       "baseFromPrice": 2100,
       "categoryId": "temple",
+      "requiredItems": ["Bilva Leaves", "Milk", "Panchamrutam"],
       "languages": ["Sanskrit", "Hindi", "Telugu", "Tamil"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 2100, "includesSamagri": false, "highlights": ["Pancha-amrit snanam", "Rudra path"] },
@@ -215,6 +225,7 @@
       "significance": "The most sacred of all Hindu sanskars, uniting two souls in holy matrimony.",
       "baseFromPrice": 15000,
       "categoryId": "special",
+      "requiredItems": ["Akshata", "Garlands", "Kalash"],
       "languages": ["Sanskrit", "Hindi", "Telugu", "Tamil", "English"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 15000, "includesSamagri": false, "highlights": ["Mandap Pooja", "Saat Phere", "Kanyadaan"] },
@@ -230,6 +241,7 @@
       "significance": "Ritual performed to eliminate architectural defects and bring balance to the home.",
       "baseFromPrice": 4500,
       "categoryId": "home-ceremonies",
+      "requiredItems": ["Kalash", "Coconut", "Havan Samagri"],
       "languages": ["Sanskrit", "Hindi", "Telugu"],
       "packages": [
         { "id": "basic", "name": "Basic", "price": 4500, "includesSamagri": false, "highlights": ["Vastu Homam", "Directions purification"] },

@@ -12,13 +12,15 @@ export type PriestProfile = {
 };
 
 export type ServicePackage = {
-  name: "Basic" | "Standard" | "Premium";
+  name: string;
   price: number;
   description: string;
 };
 
 export type PartnerService = {
   id: string;
+  poojariId?: string;
+  catalogServiceId?: string;
   name: string;
   category: string;
   description: string;
@@ -30,6 +32,8 @@ export type PartnerService = {
   enabled: boolean;
   image?: string;
   packages?: ServicePackage[];
+  adminPackages?: ServicePackage[];
+  activationBlockedByKyc?: boolean;
 };
 
 export const ORDER_STATUS = {

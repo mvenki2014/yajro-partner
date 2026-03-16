@@ -48,21 +48,19 @@ apiClient.interceptors.request.use(
 // Response Interceptor: Handle Token Refresh and Errors
 apiClient.interceptors.response.use(
   (response) => {
-    // Minimize mapping overhead if structure is already correct
-    if (response.data?.data && response.data?.message === undefined && response.data?.data?.message) {
-       response.data.message = response.data.data.message;
-       return response;
+    // The API nests the actual payload inside a 'data' property.
+    // We standardize it here to simplify consumer logic (e.g., in useQuery).
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      const standardizedResponse = {
+        ...response,
+        data: {
+          ...response.data.data, // Hoist the nested data
+          message: response.data.message || response.data.data?.message,
+        },
+      };
+      return standardizedResponse;
     }
-    
-    // Fallback to existing standardization if needed
-    const standardizedResponse = {
-      ...response,
-      data: {
-        data: response.data?.data,
-        message: response.data?.data?.message || response.data?.message,
-      },
-    };
-    return standardizedResponse;
+    return response;
   },
   async (error: AxiosError<any>) => {
     const originalRequest: any = error.config;
@@ -167,7 +165,12 @@ export const API_ENDPOINTS = {
   },
   POOJARIS: {
     UPDATE_PROFILE: "/poojaris/profile",
-  }
+  },
+  POOJA_SERVICES: {
+    LIST: "/pooja-services",
+    CREATE: "/pooja-services",
+    UPDATE_STATUS: (id: string) => `/pooja-services/${id}/status`,
+  },
 };
 
 /**
@@ -209,6 +212,34 @@ export const authApi = {
   }) => apiClient.patch(API_ENDPOINTS.POOJARIS.UPDATE_PROFILE, data).then(res => res.data),
 
   logout: () => apiClient.post(API_ENDPOINTS.AUTH.LOGOUT).then(res => res.data),
+};
+
+export type PoojaServicePackagePayload = {
+  name: "Basic" | "Standard" | "Premium";
+  price: number;
+  description: string;
+};
+
+export type PoojaServicePayload = {
+  name: string;
+  category: string;
+  description: string;
+  duration: string;
+  basePrice?: number;
+  customPrice: boolean;
+  visitType: "Home Visit" | "Temple Visit" | "Both";
+  requiredItems?: string[];
+  enabled: boolean;
+  image?: string;
+  packages?: PoojaServicePackagePayload[];
+};
+
+export const poojaServicesApi = {
+  list: () => apiClient.get(API_ENDPOINTS.POOJA_SERVICES.LIST).then((res) => res.data),
+  create: (data: PoojaServicePayload) =>
+    apiClient.post(API_ENDPOINTS.POOJA_SERVICES.CREATE, data).then((res) => res.data),
+  updateStatus: (serviceId: string, data: { enabled: boolean }) =>
+    apiClient.patch(API_ENDPOINTS.POOJA_SERVICES.UPDATE_STATUS(serviceId), data).then((res) => res.data),
 };
 
 export type Slot = {

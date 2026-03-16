@@ -11,6 +11,7 @@ export interface User {
   profile?: string;
   serviceLocation?: string;
   experienceYears?: number;
+  isKycVerified?: boolean;
 }
 
 export const AUTH_QUERY_KEY = ['auth-user'];
@@ -66,8 +67,7 @@ export function useAuth() {
     queryFn: async () => {
       if (!accessToken) return null;
       try {
-        const response = await authApi.getMe();
-        const userData = response.data as User;
+        const userData = await authApi.getMe();
         // Persist user data for faster initial load next time
         tokenStorage.setUser(userData);
         return userData;

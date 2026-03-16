@@ -1,23 +1,30 @@
 import * as React from "react";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSetShell } from "@/context/ShellContext";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/Button";
-import { partnerServices, type PartnerService } from "@/data/partner-mock";
+import { type PartnerService } from "@/data/partner-mock";
 import { ServiceCard } from "@/modules/services/ServiceCard";
 import { ServiceFilters } from "@/modules/services/ServiceFilters";
 import { DeleteServiceConfirmDialog } from "@/modules/services/DeleteServiceConfirmDialog";
+import { useAuth } from "@/hooks/useAuth";
+import { usePoojaServices, POOJA_SERVICES_QUERY_KEY } from "@/hooks/usePoojaServices";
+import { poojaServicesApi } from "@/lib/api";
 import { Plus } from "lucide-react";
 import { HiChevronLeft } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
 export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
-  const [services, setServices] = React.useState(partnerServices);
   const [serviceToDelete, setServiceToDelete] = React.useState<PartnerService | null>(null);
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isScrolled, setIsScrolled] = React.useState(false);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { services, isLoading } = usePoojaServices();
 
   React.useEffect(() => {
     const container = scrollContainerRef.current;
@@ -66,7 +73,7 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
         </button>
         <div className="min-w-0 flex-1">
           <div className="truncate font-semibold text-slate-900">My Services</div>
-          <div className="text-xs text-slate-500 truncate">Manage your offerings</div>
+          <div className="text-xs text-slate-500 truncate">Manage your opted offerings</div>
         </div>
         <Button
           size="sm"
@@ -74,7 +81,7 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
           onClick={() => navigate("/services/form")}
         >
           <Plus className="w-4 h-4 mr-1 font-bold" />
-          Add New
+          Opt Service
         </Button>
       </div>
     ),
@@ -83,20 +90,33 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
 
   const openDetails = (service: PartnerService) => navigate(`/services/${service.id}`);
 
-  const toggleService = (id: string, enabled: boolean) => {
-    setServices((prev) => prev.map((item) => (item.id === id ? { ...item, enabled } : item)));
-    const index = partnerServices.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      partnerServices[index] = { ...partnerServices[index], enabled };
-    }
-  };
+  const toggleMutation = useMutation({
+    mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
+      if (enabled && !user?.isKycVerified) {
+        throw new Error("Complete KYC before activating a service");
+      }
+      return poojaServicesApi.updateStatus(id, { enabled });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: POOJA_SERVICES_QUERY_KEY });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update service status");
+    },
+  });
 
-  const deleteService = (id: string) => {
-    setServices((prev) => prev.filter((item) => item.id !== id));
-    const index = partnerServices.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      partnerServices.splice(index, 1);
+  const toggleService = (id: string, enabled: boolean) => {
+    const currentService = services.find((item) => item.id === id);
+    if (!currentService) {
+      return;
     }
+
+    if (enabled && !user?.isKycVerified) {
+      toast.error("Complete KYC before activating a service");
+      return;
+    }
+
+    toggleMutation.mutate({ id, enabled });
   };
 
   return (
@@ -137,6 +157,12 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
         </div>
 
         <div className="grid gap-2 pb-12">
+          {isLoading && (
+            <div className="rounded-3xl border border-slate-200 bg-white px-4 py-8 text-center text-sm font-semibold text-slate-500">
+              Loading services...
+            </div>
+          )}
+
           {filteredServices.map((service) => (
             <ServiceCard
               key={service.id}
@@ -161,7 +187,7 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
                 {searchQuery.trim() 
                   ? `We couldn't find any services matching "${searchQuery}".`
                   : selectedCategory === "All" 
-                    ? "Start adding the services you want to offer to your customers." 
+                    ? "Choose services from the admin catalog and add your partner details." 
                     : `No services found in the "${selectedCategory}" category.`}
               </p>
               
@@ -182,7 +208,7 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
                     className="rounded-2xl font-bold bg-[#FF9933] hover:bg-[#E68A2E] shadow-lg shadow-orange-100"
                     onClick={() => navigate("/services/form")}
                   >
-                    Add First Service
+                    Opt First Service
                   </Button>
                 )}
               </div>
@@ -201,7 +227,8 @@ export function Services({ onNavigate }: { onNavigate: (tab: any) => void }) {
         serviceName={serviceToDelete?.name}
         onConfirm={() => {
           if (serviceToDelete) {
-            deleteService(serviceToDelete.id);
+            toast.error("Delete service API is not available yet");
+            setServiceToDelete(null);
           }
         }}
       />
