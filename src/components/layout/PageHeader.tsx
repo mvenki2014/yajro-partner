@@ -3,11 +3,13 @@ import { ChevronLeft, Crown } from "lucide-react";
 
 export function PageHeader({
   title,
+  subtitle,
   onBack,
   showPremium = true,
   rightElement,
 }: {
   title: string;
+  subtitle?: string;
   onBack?: () => void;
   showPremium?: boolean;
   rightElement?: React.ReactNode;
@@ -27,8 +29,9 @@ export function PageHeader({
         <div className="w-9" />
       )}
 
-      <div className="flex-1 text-left">
+      <div className="min-w-0 flex-1 text-left">
         <div className="truncate font-bold text-base text-slate-900">{title}</div>
+        {subtitle && <div className="text-xs text-slate-500 truncate">{subtitle}</div>}
       </div>
 
       {rightElement ? (

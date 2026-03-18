@@ -9,6 +9,8 @@ import { ManageAvailability } from "@/screens/ManageAvailability";
 import { ServiceDetails } from "@/screens/ServiceDetails";
 import { OrderDetails } from "@/screens/OrderDetails";
 import { ServiceForm } from "@/screens/ServiceForm";
+import { KycScreen } from "@/modules/kyc/KycScreen";
+import { KycFormScreen } from "@/modules/kyc/KycFormScreen";
 import { User } from "@/hooks/useAuth";
 import { NavigateFunction, Params } from "react-router-dom";
 
@@ -112,6 +114,23 @@ export const routesConfig: RouteConfig[] = [
     element: ManageAvailability,
     props: (_, __, navigate) => ({
       onBack: () => navigate("/"),
+    }),
+  },
+  {
+    path: "/kyc",
+    protected: true,
+    element: KycScreen,
+    props: (_, __, navigate) => ({
+      onBack: () => navigate("/profile"),
+    }),
+  },
+  {
+    path: "/kyc/form",
+    protected: true,
+    element: KycFormScreen,
+    props: (_, __, navigate) => ({
+      onBack: () => navigate("/kyc"),
+      onSuccess: () => navigate("/kyc"),
     }),
   },
 ];

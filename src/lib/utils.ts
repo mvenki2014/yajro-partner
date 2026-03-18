@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { KycStatus } from "./api";
+import { EncryptionService } from "./encryption";
 
 /**
  * Combine tailwind classes safely
@@ -58,5 +60,29 @@ export const handleTagKeyDown = (
       e.preventDefault();
       addTag(tagInput);
     }
+  }
+};
+
+
+/**
+ * Maps KYC status strings to badge labels and UI variants.
+ * Centralizes the logic for consistent status representation across the app.
+ */
+export const getKycBadge = (status: KycStatus | string) => {
+  // Normalize status to uppercase to handle potential backend variations
+  const normalizedStatus = status?.toUpperCase();
+
+  switch (normalizedStatus) {
+    case "APPROVED":
+      return { label: "Verified", variant: "success" as const };
+    case "PENDING":
+      return { label: "Draft", variant: "neutral" as const };
+    case "REVIEW":
+    case "IN_REVIEW":
+      return { label: "In Review", variant: "warning" as const };
+    case "REJECTED":
+      return { label: "Rejected", variant: "destructive" as const };
+    default:
+      return { label: "Action required", variant: "secondary" as const };
   }
 };

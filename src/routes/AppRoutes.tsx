@@ -1,10 +1,12 @@
 import * as React from "react";
-import { Routes, Route, useNavigate, useParams, useSearchParams, Navigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useParams, useSearchParams, Navigate, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ShellProvider } from "@/context/ShellContext";
 import { MobileShell } from "@/components/layout/MobileShell";
 import { KycWarningRibbon } from "@/components/layout/KycWarningRibbon";
 import { routesConfig, RouteConfig } from "./config";
 import { User } from "@/hooks/useAuth";
+import { kycApi } from "@/lib/api";
 
 interface AppRoutesProps {
   user: User | null;
@@ -12,6 +14,7 @@ interface AppRoutesProps {
 
 export function AppRoutes({ user }: AppRoutesProps) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavigation = (page: string) => {
     switch (page) {
@@ -33,6 +36,9 @@ export function AppRoutes({ user }: AppRoutesProps) {
       case "availability":
         navigate("/availability");
         break;
+      case "kyc":
+        navigate("/kyc");
+        break;
       default:
         navigate("/");
     }
@@ -52,11 +58,23 @@ export function AppRoutes({ user }: AppRoutesProps) {
     return <>{children}</>;
   };
 
+  const isKycPage = location.pathname.startsWith("/kyc");
+  
+  const { data: kycData } = useQuery({
+    queryKey: ["kyc-status"],
+    queryFn: () => kycApi.get(),
+    enabled: !!user,
+  });
+
+  const kycStatus = kycData?.kycStatus?.toUpperCase();
+  const isKycInReview = kycStatus === "REVIEW" || kycStatus === "IN_REVIEW";
+  const isKycApproved = kycStatus === "APPROVED";
+
   return (
     <ShellProvider>
       <MobileShell
         kycRibbon={
-          user && user.isKycVerified !== true ? (
+          user && user.isKycVerified !== true && !isKycPage && !isKycInReview && !isKycApproved ? (
             <KycWarningRibbon onAction={() => navigate("/profile")} />
           ) : null
         }

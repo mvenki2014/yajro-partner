@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { tokenStorage } from "@/lib/storage";
+import { EncryptionService } from "./encryption";
 
 const BASE_URL = (import.meta as any).env.VITE_API_URL || "http://localhost:3000/api/v1";
 
@@ -171,6 +172,15 @@ export const API_ENDPOINTS = {
     CREATE: "/pooja-services",
     UPDATE_STATUS: (id: string) => `/pooja-services/${id}/status`,
   },
+  KYC: {
+    GET: "/poojaris/kyc",
+    SUBMIT: "/kyc",
+    UPDATE: "/kyc",
+    AADHAAR: "/poojaris/kyc/aadhaar",
+    PAN: "/poojaris/kyc/pan",
+    BANK: "/poojaris/kyc/bank",
+    REVIEW: "/poojaris/kyc/review",
+  },
 };
 
 /**
@@ -264,3 +274,77 @@ export const fetchTimeSlots = async (): Promise<Slot[]> => {
 };
 
 export default apiClient;
+
+export type KycStatus = "NOT_SUBMITTED" | "PENDING" | "REVIEW" | "IN_REVIEW" | "APPROVED" | "REJECTED";
+
+export type KycPayload = {
+  aadhaarNumber: string;
+  aadhaarFront: string;
+  aadhaarBack: string;
+  panNumber: string;
+  panDocument: string;
+  accountHolderName: string;
+  accountNumber: string;
+  ifscCode: string;
+  bankName: string;
+};
+
+export type KycData = {
+  kycStatus: KycStatus;
+  aadharNumber?: string;
+  panNumber?: string;
+  accountNumber?: string;
+  bankName?: string;
+  ifscCode?: string;
+  accountHolderName?: string;
+  aadharFPath?: string;
+  aadharBPath?: string;
+  panPath?: string;
+  bankDocPath?: string;
+  rejectionReason?: string;
+  kycCompletedDate?: string;
+  kycExpireDate?: string;
+};
+
+export const kycApi = {
+  get: (): Promise<KycData | null> =>
+    apiClient
+      .get(API_ENDPOINTS.KYC.GET)
+      .then((res) => {
+        const kyc = res.data;
+        if (!kyc) return null;
+
+        // Decode base64 values from API as requested
+        return {
+          ...kyc,
+          aadharNumber: kyc.aadharNumber ? EncryptionService.base64Decode(kyc.aadharNumber) : null,
+          panNumber: kyc.panNumber ? EncryptionService.base64Decode(kyc.panNumber) : null,
+          accountNumber: kyc.accountNumber ? EncryptionService.base64Decode(kyc.accountNumber) : null,
+          aadharFPath: kyc.aadharFPath ? EncryptionService.base64Decode(kyc.aadharFPath) : kyc.aadharFPath,
+          aadharBPath: kyc.aadharBPath ? EncryptionService.base64Decode(kyc.aadharBPath) : kyc.aadharBPath,
+          panPath: kyc.panPath ? EncryptionService.base64Decode(kyc.panPath) : kyc.panPath,
+          bankDocPath: kyc.bankDocPath ? EncryptionService.base64Decode(kyc.bankDocPath) : kyc.bankDocPath,
+        };
+      })
+      .catch(() => null),
+
+  submit: (data: KycPayload): Promise<KycData> =>
+    apiClient.post(API_ENDPOINTS.KYC.SUBMIT, data).then((res) => res.data),
+
+  update: (data: Partial<KycPayload>): Promise<KycData> =>
+    apiClient.put(API_ENDPOINTS.KYC.UPDATE, data).then((res) => res.data),
+
+  submitStep: (step: "aadhaar" | "pan" | "bank" | "review", formData: FormData): Promise<any> => {
+    const endpoints = {
+      aadhaar: API_ENDPOINTS.KYC.AADHAAR,
+      pan: API_ENDPOINTS.KYC.PAN,
+      bank: API_ENDPOINTS.KYC.BANK,
+      review: API_ENDPOINTS.KYC.REVIEW,
+    };
+    return apiClient
+      .post(endpoints[step], formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => res.data);
+  },
+};

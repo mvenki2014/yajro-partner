@@ -144,11 +144,30 @@ const address = (value?: Maskable): string => {
   return `${words[0]} *** ${words[words.length - 1]}`;
 };
 
+const panNumber = (value?: Maskable): string => {
+  const val = normalize(value);
+
+  if (val.length <= 6) return val;
+
+  // Example: ABCDE1234F → ABC****34F
+  return `${val.slice(0, 3)}****${val.slice(-3)}`;
+};
+
+
+const maskLast = (val: string, visible = 4) =>
+  ` ${"*".repeat(Math.max(val.length - visible, 0))} ${val.slice(-visible)}`;
+
+const bankAccount = (value?: Maskable): string => {
+  const val = normalize(value);
+  // Example: 1234567890 → ******7890
+  return val.length <= 4 ? val : maskLast(val, 4);
+};
+
 /**
  * Automatically mask sensitive fields in objects
  *
  * Recursively scans object keys and masks:
- * phone, mobile, email, aadhaar, card, password, token
+ * phone, mobile, email, aadhaar, card, password, panNumber, token
  */
 const object = <T extends Record<string, any>>(data: T): T => {
   const sensitiveFields = [
@@ -158,6 +177,8 @@ const object = <T extends Record<string, any>>(data: T): T => {
     "aadhaar",
     "card",
     "password",
+    "panNumber",
+    "bankAccount",
     "token"
   ];
 
@@ -205,9 +226,11 @@ export const mask = {
   phone,
   email,
   name,
+  address,
+  orderId,
   card,
   aadhaar,
-  orderId,
-  address,
+  panNumber,
+  bankAccount,
   object
 };

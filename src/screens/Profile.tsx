@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { useQuery } from "@tanstack/react-query";
 import {
   ChevronRight,
   CalendarClock,
@@ -19,13 +20,27 @@ import {
   Info,
   LogOut,
   Loader2,
+  BadgeCheck,
 } from "lucide-react";
 import packageJson from "../../package.json";
 import { priestProfile } from "@/data/partner-mock";
 import { useAuth } from "@/hooks/useAuth";
+import { kycApi } from "@/lib/api";
+import { getKycBadge } from "@/lib/utils";
 
 export function Profile({ onNavigate, onLogout }: { onNavigate: (tab: any) => void; onLogout: () => void }) {
   const { user, isLoggingOut, logout } = useAuth();
+  
+  const { data: kycData } = useQuery({
+    queryKey: ["kyc-status"],
+    queryFn: kycApi.get,
+    staleTime: 30000,
+  });
+
+  const kycStatus = kycData?.kycStatus || (user?.isKycVerified ? "APPROVED" : "NOT_SUBMITTED");
+
+  const kycBadge = getKycBadge(kycStatus);
+
   const displayName = user?.name || priestProfile.fullName;
   const experienceYears = user?.experienceYears || priestProfile.experienceYears;
 
@@ -45,6 +60,13 @@ export function Profile({ onNavigate, onLogout }: { onNavigate: (tab: any) => vo
           label: "Manage Availability",
           extra: "Set leave & time slots",
           onClick: () => onNavigate("availability"),
+        },
+        {
+          icon: <BadgeCheck className="h-5 w-5 text-violet-500" />,
+          label: "KYC Verification",
+          extra: kycBadge.label,
+          badge: <Badge variant={kycBadge.variant} className="ml-2 text-[10px] px-1.5 py-0">{kycBadge.label}</Badge>,
+          onClick: () => onNavigate("kyc"),
         },
         {
           icon: <User className="h-5 w-5 text-blue-500" />,
@@ -156,7 +178,10 @@ export function Profile({ onNavigate, onLogout }: { onNavigate: (tab: any) => vo
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="p-2.5 rounded-xl bg-slate-50 shrink-0">{item.icon}</div>
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-slate-800 truncate">{item.label}</p>
+                      <div className="flex items-center">
+                        <p className="text-sm font-bold text-slate-800 truncate">{item.label}</p>
+                        {item.badge}
+                      </div>
                       <p className="text-xs text-slate-500 truncate">{item.extra}</p>
                     </div>
                   </div>
